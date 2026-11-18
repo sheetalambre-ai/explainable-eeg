@@ -1,0 +1,75 @@
+{'config': 0, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.8321428571428571, 'epochs': 178}
+{'config': 0, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.8071428571428573, 'epochs': 128}
+{'config': 1, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.8642857142857142, 'epochs': 182}
+{'config': 1, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.8571428571428571, 'epochs': 128}
+{'config': 2, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.8392857142857144, 'epochs': 204}
+{'config': 2, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.8071428571428573, 'epochs': 113}
+{'config': 3, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.8607142857142855, 'epochs': 182}
+{'config': 3, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.8607142857142858, 'epochs': 128}
+{'config': 4, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.6749999999999999, 'epochs': 178}
+{'config': 4, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.6964285714285714, 'epochs': 128}
+{'config': 5, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.7607142857142857, 'epochs': 178}
+{'config': 5, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.7607142857142856, 'epochs': 128}
+{'config': 6, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.6749999999999999, 'epochs': 178}
+{'config': 6, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.7, 'epochs': 128}
+{'config': 7, 'train': 'Arabic', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.7678571428571428, 'epochs': 178}
+{'config': 7, 'train': 'Hindi', 'F1': 8, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.7607142857142856, 'epochs': 128}
+{'config': 8, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.7178571428571427, 'epochs': 124}
+{'config': 8, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.8428571428571429, 'epochs': 128}
+{'config': 9, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.7392857142857143, 'epochs': 278}
+{'config': 9, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.7928571428571429, 'epochs': 113}
+{'config': 10, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.7107142857142856, 'epochs': 124}
+{'config': 10, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.8428571428571429, 'epochs': 128}
+{'config': 11, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.725, 'epochs': 300}
+{'config': 11, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.7892857142857144, 'epochs': 113}
+{'config': 12, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.682142857142857, 'epochs': 251}
+{'config': 12, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.6035714285714285, 'epochs': 128}
+{'config': 13, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.6678571428571429, 'epochs': 178}
+{'config': 13, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.6607142857142857, 'epochs': 128}
+{'config': 14, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.682142857142857, 'epochs': 251}
+{'config': 14, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.6142857142857142, 'epochs': 128}
+{'config': 15, 'train': 'Arabic', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.6642857142857144, 'epochs': 178}
+{'config': 15, 'train': 'Hindi', 'F1': 8, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.6607142857142857, 'epochs': 128}
+{'config': 16, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.85, 'epochs': 146}
+{'config': 16, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.9428571428571428, 'epochs': 138}
+{'config': 17, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.875, 'epochs': 146}
+{'config': 17, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9714285714285715, 'epochs': 238}
+{'config': 18, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.8607142857142858, 'epochs': 146}
+{'config': 18, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.9499999999999998, 'epochs': 138}
+{'config': 19, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.8714285714285713, 'epochs': 146}
+{'config': 19, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.9571428571428571, 'epochs': 138}
+{'config': 20, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.8321428571428573, 'epochs': 228}
+{'config': 20, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.8428571428571429, 'epochs': 185}
+{'config': 21, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.7714285714285716, 'epochs': 146}
+{'config': 21, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9285714285714286, 'epochs': 184}
+{'config': 22, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.8321428571428573, 'epochs': 228}
+{'config': 22, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.8428571428571429, 'epochs': 185}
+{'config': 23, 'train': 'Arabic', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.8678571428571429, 'epochs': 237}
+{'config': 23, 'train': 'Hindi', 'F1': 16, 'drop': 0.25, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.9321428571428572, 'epochs': 184}
+{'config': 24, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.8035714285714286, 'epochs': 175}
+{'config': 24, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 0, 'val_acc': 0.8928571428571429, 'epochs': 198}
+{'config': 25, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.889285714285714, 'epochs': 216}
+{'config': 25, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9214285714285715, 'epochs': 167}
+{'config': 26, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.8142857142857143, 'epochs': 146}
+{'config': 26, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 0, 'val_acc': 0.9, 'epochs': 198}
+{'config': 27, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.85, 'epochs': 146}
+{'config': 27, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.001, 'wd': 0.01, 'shift': 32, 'val_acc': 0.9178571428571429, 'epochs': 167}
+{'config': 28, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.7285714285714285, 'epochs': 228}
+{'config': 28, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 0, 'val_acc': 0.7392857142857142, 'epochs': 198}
+{'config': 29, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.6785714285714286, 'epochs': 175}
+{'config': 29, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9142857142857143, 'epochs': 273}
+{'config': 30, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.7285714285714285, 'epochs': 228}
+{'config': 30, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 0, 'val_acc': 0.7321428571428572, 'epochs': 198}
+{'config': 31, 'train': 'Arabic', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.6785714285714286, 'epochs': 175}
+{'config': 31, 'train': 'Hindi', 'F1': 16, 'drop': 0.5, 'lr': 0.0003, 'wd': 0.01, 'shift': 32, 'val_acc': 0.9178571428571429, 'epochs': 273}
+selected config 17 {'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32}
+{'direction': 'Arabic->Hindi', 'seed': 42, 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.875, 'test_acc': 0.7219155844155845, 'epochs': 146}
+{'direction': 'Arabic->Hindi', 'seed': 43, 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9, 'test_acc': 0.7605102040816327, 'epochs': 116}
+{'direction': 'Arabic->Hindi', 'seed': 44, 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.8928571428571427, 'test_acc': 0.6532189239332097, 'epochs': 172}
+{'direction': 'Hindi->Arabic', 'seed': 42, 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9678571428571429, 'test_acc': 0.8322066326530612, 'epochs': 178}
+{'direction': 'Hindi->Arabic', 'seed': 43, 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9428571428571428, 'test_acc': 0.7764413265306123, 'epochs': 123}
+{'direction': 'Hindi->Arabic', 'seed': 44, 'F1': 16, 'drop': 0.25, 'lr': 0.001, 'wd': 0.0, 'shift': 32, 'val_acc': 0.9214285714285715, 'test_acc': 0.7581505102040816, 'epochs': 122}
+                mean    std
+direction                  
+Arabic->Hindi  0.712  0.054
+Hindi->Arabic  0.789  0.039

@@ -1,0 +1,17 @@
+direction,preprocessing,representation,test_evidence_seconds,n_test_segments,balanced_accuracy
+Arabic->Hindi,filtered_no_ica,power,4,2198,0.9239888682745825
+Arabic->Hindi,filtered_no_ica,power,8,1099,0.9575950834879405
+Arabic->Hindi,filtered_no_ica,power,16,628,0.9638189935064935
+Arabic->Hindi,filtered_no_ica,power,32,314,0.975
+Hindi->Arabic,filtered_no_ica,power,4,1946,0.9354081632653062
+Hindi->Arabic,filtered_no_ica,power,8,973,0.9678061224489796
+Hindi->Arabic,filtered_no_ica,power,16,556,0.9680803571428571
+Hindi->Arabic,filtered_no_ica,power,32,278,0.9754464285714285
+Arabic->Hindi,ica_enrollment_only,power,4,2198,0.9280820964749535
+Arabic->Hindi,ica_enrollment_only,power,8,1099,0.9542671614100187
+Arabic->Hindi,ica_enrollment_only,power,16,628,0.9635551948051949
+Arabic->Hindi,ica_enrollment_only,power,32,314,0.9785714285714284
+Hindi->Arabic,ica_enrollment_only,power,4,1946,0.9369387755102041
+Hindi->Arabic,ica_enrollment_only,power,8,973,0.9629591836734693
+Hindi->Arabic,ica_enrollment_only,power,16,556,0.9683035714285715
+Hindi->Arabic,ica_enrollment_only,power,32,278,0.9754464285714285

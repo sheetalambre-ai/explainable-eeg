@@ -1,0 +1,5 @@
+          n_sig_q_time  n_sig_q_familiarity  n_sig_q_parallel_trend
+pipeline                                                           
+filtered             0                    0                       0
+ica                  0                    0                       0
+raw                  0                    0                       0

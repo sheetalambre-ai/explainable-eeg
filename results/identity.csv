@@ -1,0 +1,25 @@
+pipeline,model,test,scheme,bal_acc,chance
+raw,logreg,pooled,window,0.9754931972789114,0.05
+raw,logreg,pooled,file,0.9738492063492064,0.05
+raw,logreg,train Arabic -> test Hindi,cross-language,0.8225962430426715,0.05
+raw,logreg,train Hindi -> test Arabic,cross-language,0.90625,0.05
+raw,rf,pooled,window,0.9721428571428572,0.05
+raw,rf,pooled,file,0.9669274376417233,0.05
+raw,rf,train Arabic -> test Hindi,cross-language,0.8128942486085343,0.05
+raw,rf,train Hindi -> test Arabic,cross-language,0.8965561224489795,0.05
+filtered,logreg,pooled,window,0.985702947845805,0.05
+filtered,logreg,pooled,file,0.9825056689342404,0.05
+filtered,logreg,train Arabic -> test Hindi,cross-language,0.9119005102040816,0.05
+filtered,logreg,train Hindi -> test Arabic,cross-language,0.928482142857143,0.05
+filtered,rf,pooled,window,0.9832426303854878,0.05
+filtered,rf,pooled,file,0.9770124716553287,0.05
+filtered,rf,train Arabic -> test Hindi,cross-language,0.891263914656772,0.05
+filtered,rf,train Hindi -> test Arabic,cross-language,0.9245663265306122,0.05
+ica,logreg,pooled,window,0.9864342403628117,0.05
+ica,logreg,pooled,file,0.9830215419501134,0.05
+ica,logreg,train Arabic -> test Hindi,cross-language,0.9132792207792206,0.05
+ica,logreg,train Hindi -> test Arabic,cross-language,0.9400892857142857,0.05
+ica,rf,pooled,window,0.9817743764172336,0.05
+ica,rf,pooled,file,0.977108843537415,0.05
+ica,rf,train Arabic -> test Hindi,cross-language,0.8918564471243041,0.05
+ica,rf,train Hindi -> test Arabic,cross-language,0.929030612244898,0.05

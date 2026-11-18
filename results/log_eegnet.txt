@@ -1,0 +1,10 @@
+{'direction': 'Arabic->Hindi', 'seed': 42, 'bal_acc': 0.631676716141002, 'val_acc': 0.8293650793650794, 'epochs': 151}
+{'direction': 'Arabic->Hindi', 'seed': 43, 'bal_acc': 0.6366477272727272, 'val_acc': 0.8357142857142857, 'epochs': 145}
+{'direction': 'Arabic->Hindi', 'seed': 44, 'bal_acc': 0.49062152133580705, 'val_acc': 0.7678571428571428, 'epochs': 131}
+{'direction': 'Hindi->Arabic', 'seed': 42, 'bal_acc': 0.6964795918367347, 'val_acc': 0.880952380952381, 'epochs': 140}
+{'direction': 'Hindi->Arabic', 'seed': 43, 'bal_acc': 0.44235969387755103, 'val_acc': 0.5551948051948051, 'epochs': 82}
+{'direction': 'Hindi->Arabic', 'seed': 44, 'bal_acc': 0.48121173469387746, 'val_acc': 0.7172619047619048, 'epochs': 105}
+                mean    std
+direction                  
+Arabic->Hindi  0.586  0.083
+Hindi->Arabic  0.540  0.137

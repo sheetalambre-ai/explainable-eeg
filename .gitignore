@@ -1,0 +1,18 @@
+# Raw / third-party data (download from Mendeley 7cdyp2r5cz; contains participant identifiers)
+data/
+EEG Dataset for Second Language Acquisition Arbic/
+*.zip
+*.edf
+# Large caches
+*.npz
+results/corrected/feature_cache/
+# Third-party papers (copyrighted)
+*.pdf
+# Python / LaTeX junk
+__pycache__/
+*.pyc
+*.aux
+*.log
+*.out
+*.synctex.gz
+!results/*.txt

@@ -1,0 +1,54 @@
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'window', 'bal_acc': 0.6817774170108863}
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'file', 'bal_acc': 0.6470221457047283}
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'subject', 'bal_acc': 0.5531631110034629, 'perm_p': 0.009900990099009901}
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'rf', 'scheme': 'window', 'bal_acc': 0.826243281989513}
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'rf', 'scheme': 'file', 'bal_acc': 0.7822546330542481}
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\_utils.py", line 109, in __call__
+    return self.func(**kwargs)
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 607, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 607, in <listcomp>
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\parallel.py", line 129, in __call__
+    return self.function(*args, **kwargs)
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\ensemble\_forest.py", line 192, in _parallel_build_trees
+    tree._fit(
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\tree\_classes.py", line 472, in _fit
+    builder.build(self.tree_, X, y, sample_weight, missing_values_in_feature_mask)
+  File "sklearn\\tree\\_tree.pyx", line 166, in sklearn.tree._tree.DepthFirstTreeBuilder.build
+  File "sklearn\\tree\\_tree.pyx", line 285, in sklearn.tree._tree.DepthFirstTreeBuilder.build
+  File "sklearn\\tree\\_tree.pyx", line 940, in sklearn.tree._tree.Tree._add_node
+  File "sklearn\\tree\\_tree.pyx", line 908, in sklearn.tree._tree.Tree._resize_c
+  File "sklearn\\tree\\_utils.pyx", line 35, in sklearn.tree._utils.safe_realloc
+MemoryError: could not allocate 65536 bytes
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Sheetal\Desktop\Code\EEG Bilingual\scripts\03_language.py", line 40, in <module>
+    acc, folds, _ = cross_val(X, y, groups, scheme, model, return_folds=True)
+  File "C:\Users\Sheetal\Desktop\Code\EEG Bilingual\src\evaluate.py", line 44, in cross_val
+    clf = MODELS[model]().fit(X[tr], y[tr])
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py", line 1474, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\ensemble\_forest.py", line 489, in fit
+    trees = Parallel(
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\parallel.py", line 67, in __call__
+    return super().__call__(iterable_with_config)
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 2072, in __call__
+    return output if self.return_generator else list(output)
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 1682, in _get_outputs
+    yield from self._retrieve()
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 1784, in _retrieve
+    self._raise_error_fast()
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 1859, in _raise_error_fast
+    error_job.get_result(self.timeout)
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 758, in get_result
+    return self._return_or_raise()
+  File "C:\Users\Sheetal\AppData\Local\Programs\Python\Python310\lib\site-packages\joblib\parallel.py", line 773, in _return_or_raise
+    raise self._result
+MemoryError: could not allocate 65536 bytes

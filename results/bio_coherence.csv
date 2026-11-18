@@ -1,0 +1,7 @@
+features,n_feat,direction,bal_acc
+band power,140,Arabic->Hindi,0.9132792207792206
+band power,140,Hindi->Arabic,0.9400892857142857
+coherence,455,Arabic->Hindi,0.9492149814471242
+coherence,455,Hindi->Arabic,0.9623086734693876
+power + coherence,595,Arabic->Hindi,0.9538300092764377
+power + coherence,595,Hindi->Arabic,0.9689413265306122

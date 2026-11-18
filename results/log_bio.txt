@@ -1,0 +1,42 @@
+
+== duration
+    direction  seconds  n_tests  bal_acc
+Arabic->Hindi        4     2198    0.913
+Arabic->Hindi        8     1099    0.950
+Arabic->Hindi       16      628    0.964
+Arabic->Hindi       32      314    0.976
+Hindi->Arabic        4     1946    0.940
+Hindi->Arabic        8      973    0.967
+Hindi->Arabic       16      556    0.971
+Hindi->Arabic       32      278    0.975
+
+== verification
+    direction  seconds   eer
+Arabic->Hindi        4 0.028
+Arabic->Hindi       16 0.015
+Hindi->Arabic        4 0.032
+Hindi->Arabic       16 0.011
+
+== ablation
+       kind                 subset  n_feat  bal_acc
+        all                    all     140    0.927
+       band                  delta      28    0.763
+       band                  theta      28    0.732
+       band                  alpha      28    0.778
+       band                   beta      28    0.858
+       band                  gamma      28    0.878
+     region                frontal      60    0.858
+     region               temporal      40    0.748
+     region               parietal      20    0.582
+     region              occipital      20    0.612
+    feature                    log      70    0.923
+    feature                    rel      70    0.848
+emg_control                1-30 Hz     112    0.909
+emg_control                1-13 Hz      84    0.884
+emg_control 1-30 Hz, non-EMG sites      48    0.795
+emg_control 1-13 Hz, non-EMG sites      36    0.737
+
+== time
+language    protocol  bal_acc
+  Arabic early->late    0.970
+   Hindi early->late    0.982

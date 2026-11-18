@@ -1,0 +1,5 @@
+direction,seconds,eer
+Arabic->Hindi,4,0.02819548872180444
+Arabic->Hindi,16,0.015420717398592021
+Hindi->Arabic,4,0.032401146751771526
+Hindi->Arabic,16,0.01055471412343817

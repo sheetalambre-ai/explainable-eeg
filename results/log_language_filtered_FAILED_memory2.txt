@@ -1,0 +1,2 @@
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'window', 'bal_acc': 0.6817774170108863}
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'file', 'bal_acc': 0.6470221457047283}

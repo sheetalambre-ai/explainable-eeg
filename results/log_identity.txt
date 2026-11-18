@@ -1,0 +1,31 @@
+raw logreg done
+raw rf done
+filtered logreg done
+filtered rf done
+ica logreg done
+ica rf done
+pipeline  model                       test         scheme  bal_acc  chance
+     raw logreg                     pooled         window 0.975493    0.05
+     raw logreg                     pooled           file 0.973849    0.05
+     raw logreg train Arabic -> test Hindi cross-language 0.822596    0.05
+     raw logreg train Hindi -> test Arabic cross-language 0.906250    0.05
+     raw     rf                     pooled         window 0.972143    0.05
+     raw     rf                     pooled           file 0.966927    0.05
+     raw     rf train Arabic -> test Hindi cross-language 0.812894    0.05
+     raw     rf train Hindi -> test Arabic cross-language 0.896556    0.05
+filtered logreg                     pooled         window 0.985703    0.05
+filtered logreg                     pooled           file 0.982506    0.05
+filtered logreg train Arabic -> test Hindi cross-language 0.911901    0.05
+filtered logreg train Hindi -> test Arabic cross-language 0.928482    0.05
+filtered     rf                     pooled         window 0.983243    0.05
+filtered     rf                     pooled           file 0.977012    0.05
+filtered     rf train Arabic -> test Hindi cross-language 0.891264    0.05
+filtered     rf train Hindi -> test Arabic cross-language 0.924566    0.05
+     ica logreg                     pooled         window 0.986434    0.05
+     ica logreg                     pooled           file 0.983022    0.05
+     ica logreg train Arabic -> test Hindi cross-language 0.913279    0.05
+     ica logreg train Hindi -> test Arabic cross-language 0.940089    0.05
+     ica     rf                     pooled         window 0.981774    0.05
+     ica     rf                     pooled           file 0.977109    0.05
+     ica     rf train Arabic -> test Hindi cross-language 0.891856    0.05
+     ica     rf train Hindi -> test Arabic cross-language 0.929031    0.05

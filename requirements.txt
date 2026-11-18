@@ -1,0 +1,9 @@
+numpy
+scipy
+pandas
+scikit-learn
+statsmodels
+mne
+matplotlib
+threadpoolctl
+torch  # only for scripts/08_eegnet.py, 08b_eegnet_tuned.py

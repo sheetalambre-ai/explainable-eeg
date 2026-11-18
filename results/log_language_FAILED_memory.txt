@@ -1,0 +1,28 @@
+{'pipeline': 'raw', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'window', 'bal_acc': 0.6487748836417672}
+{'pipeline': 'raw', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'file', 'bal_acc': 0.6126841929550082}
+{'pipeline': 'raw', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'subject', 'bal_acc': 0.48890096294211216, 'perm_p': 0.594059405940594}
+{'pipeline': 'raw', 'task': 'stimulus', 'model': 'rf', 'scheme': 'window', 'bal_acc': 0.7999374840437022}
+{'pipeline': 'raw', 'task': 'stimulus', 'model': 'rf', 'scheme': 'file', 'bal_acc': 0.7525284594890057}
+{'pipeline': 'raw', 'task': 'stimulus', 'model': 'rf', 'scheme': 'subject', 'bal_acc': 0.5053596794993487}
+{'pipeline': 'raw', 'task': 'time_ctrl', 'model': 'logreg', 'scheme': 'window', 'bal_acc': 0.5997111344537815}
+{'pipeline': 'raw', 'task': 'time_ctrl', 'model': 'logreg', 'scheme': 'file', 'bal_acc': 0.5067095588235294}
+{'pipeline': 'raw', 'task': 'time_ctrl', 'model': 'logreg', 'scheme': 'subject', 'bal_acc': 0.5526523109243697, 'perm_p': 0.009900990099009901}
+{'pipeline': 'raw', 'task': 'time_ctrl', 'model': 'rf', 'scheme': 'window', 'bal_acc': 0.6646796218487394}
+{'pipeline': 'raw', 'task': 'time_ctrl', 'model': 'rf', 'scheme': 'file', 'bal_acc': 0.5345063025210084}
+{'pipeline': 'raw', 'task': 'time_ctrl', 'model': 'rf', 'scheme': 'subject', 'bal_acc': 0.5684611344537815}
+{'pipeline': 'raw', 'task': 'familiarity', 'model': 'logreg', 'scheme': 'window', 'bal_acc': 0.6821700875940021}
+{'pipeline': 'raw', 'task': 'familiarity', 'model': 'logreg', 'scheme': 'file', 'bal_acc': 0.6488934979552703}
+{'pipeline': 'raw', 'task': 'familiarity', 'model': 'logreg', 'scheme': 'subject', 'bal_acc': 0.5368882931887999, 'perm_p': 0.019801980198019802}
+{'pipeline': 'raw', 'task': 'familiarity', 'model': 'rf', 'scheme': 'window', 'bal_acc': 0.8131730160904247}
+{'pipeline': 'raw', 'task': 'familiarity', 'model': 'rf', 'scheme': 'file', 'bal_acc': 0.7685362735698307}
+{'pipeline': 'raw', 'task': 'familiarity', 'model': 'rf', 'scheme': 'subject', 'bal_acc': 0.5030230692468742}
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'window', 'bal_acc': 0.6817774170108863}
+{'pipeline': 'filtered', 'task': 'stimulus', 'model': 'logreg', 'scheme': 'file', 'bal_acc': 0.6470221457047283}
+Traceback (most recent call last):
+  File "C:\Users\Sheetal\Desktop\Code\EEG Bilingual\scripts\03_language.py", line 43, in <module>
+    row["perm_p"], _ = permutation_p(X, y, groups, scheme, files, acc, N_PERM)
+  File "C:\Users\Sheetal\Desktop\Code\EEG Bilingual\src\evaluate.py", line 61, in permutation_p
+    null.append(cross_val(X, y_p, groups, scheme, model))
+  File "C:\Users\Sheetal\Desktop\Code\EEG Bilingual\src\evaluate.py", line 44, in cross_val
+    clf = MODELS[model]().fit(X[tr], y[tr])
+numpy.core._exceptions._ArrayMemoryError: Unable to allocate 4.20 MiB for an array with shape (3934, 140) and data type float64
