@@ -24,6 +24,10 @@ Caveats (same-session recordings, fixed block order, group/sex/date confounds, p
 contributions) are documented in [`IEEE_READINESS.md`](IEEE_READINESS.md) and
 [`REVIEWER_RESPONSE.md`](REVIEWER_RESPONSE.md).
 
+## Presentation dashboard
+
+Live: https://dashboard-ten-virid-83.vercel.app — or open [`dashboard/index.html`](dashboard/index.html) in any browser — it is a single self-contained file that runs fully offline (no server, no internet). It has a live demo that identifies a participant from 32 s of EEG features (built-in samples or your own CSV, e.g. [`dashboard/samples/`](dashboard/samples/)), the main results charts, and a plain-language explainer. Regenerate it with `python scripts/13_export_dashboard.py`.
+
 ## Setup
 
 Python 3.10.

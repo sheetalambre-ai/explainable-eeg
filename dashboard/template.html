@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>EEG Identity Lab</title>
+<style>
+:root{
+  --bg:#f6f4fd; --card:#ffffff; --ink:#1e1846; --mute:#6b6890; --line:#e9e5f7;
+  --acc:#5b3fd6; --acc2:#7c5cff; --soft:#f1edff; --soft2:#e3dbff; --soft3:#cfc2ff;
+  --side1:#2c1f66; --side2:#1a1245; --sideOn:rgba(255,255,255,.12);
+  --pink:#c2255c; --pinkSoft:#fde8f1; --ok:#2f9e44; --okSoft:#e9f9ee; --warn:#e03131; --warnSoft:#fff0f0;
+  --b1:#4dabf7; --b2:#51cf66; --b3:#fcc419; --b4:#ff922b; --b5:#f06595;
+  --shadow:0 1px 2px rgba(30,24,70,.04),0 8px 24px rgba(91,63,214,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Inter","Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+button{font:inherit}
+.app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+aside{background:linear-gradient(180deg,var(--side1),var(--side2));color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+aside::after{content:"";position:absolute;left:-40px;bottom:90px;width:300px;height:300px;background:radial-gradient(circle,rgba(124,92,255,.35),transparent 65%);pointer-events:none}
+.brand{display:flex;gap:11px;align-items:center;margin:0 6px 26px}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#8f73ff,#5b3fd6);display:grid;place-items:center;box-shadow:0 6px 18px rgba(124,92,255,.45)}
+.brand b{display:block;font-size:16px;letter-spacing:-.01em}.brand small{color:#bcb0f5;font-size:11.5px}
+.vt{display:flex;flex-direction:column;gap:4px;position:relative;z-index:1}
+.vt button{display:flex;gap:12px;align-items:center;background:none;border:0;color:#cfc6f7;padding:11px 14px;border-radius:12px;cursor:pointer;text-align:left;font-size:14.5px;transition:background .2s,color .2s}
+.vt button:hover{background:rgba(255,255,255,.06);color:#fff}
+.vt button.on{background:var(--sideOn);color:#fff;font-weight:600;box-shadow:inset 3px 0 0 #a993ff}
+.vt svg{flex:none}
+aside .foot{margin-top:auto;border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px 14px;font-size:12px;color:#c7bcf7;position:relative;z-index:1;background:rgba(255,255,255,.04)}
+aside .foot b{color:#fff;display:block;font-size:13px;margin-bottom:2px}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#69db7c;margin-right:6px;box-shadow:0 0 0 0 rgba(105,219,124,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(105,219,124,0)}100%{box-shadow:0 0 0 0 rgba(105,219,124,0)}}
+main{padding:22px 26px 48px;min-width:0}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}
+.title{display:flex;gap:14px;align-items:center}
+.title .ic{width:54px;height:54px;border-radius:15px;background:linear-gradient(135deg,#3b2a8a,#5b3fd6);display:grid;place-items:center;box-shadow:var(--shadow);flex:none}
+h1{margin:0;font-size:26px;letter-spacing:-.02em;line-height:1.15}
+.top p{margin:2px 0 0;color:var(--mute);max-width:720px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 14px;box-shadow:var(--shadow)}
+.stat svg{color:var(--acc)}
+.stat b{font-size:17px;display:block;line-height:1.1}.stat span{font-size:12px;color:var(--mute)}
+.view{display:none}.view.on{display:block}
+.view.on>*{animation:rise .45s both}
+.view.on>*:nth-child(2){animation-delay:.06s}.view.on>*:nth-child(3){animation-delay:.12s}.view.on>*:nth-child(4){animation-delay:.18s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,430px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}
+.ov2{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
+.ov3{grid-template-columns:minmax(0,1.15fr) minmax(0,.9fr) minmax(0,1.1fr)}
+@media (max-width:1180px){.ov2,.ov3{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.hd{display:flex;align-items:center;gap:9px;margin:0 0 4px;font-size:16px;font-weight:700}
+.hd svg{color:var(--acc);flex:none}
+.note{color:var(--mute);font-size:13px;margin:0 0 12px}
+.kick{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--acc);font-weight:700}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
+.tabs button{border:1px solid var(--line);background:#faf9ff;color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer;font-size:13px;transition:.2s}
+.tabs button:hover{border-color:var(--soft3)}
+.tabs button.on{background:var(--soft2);border-color:var(--soft3);color:var(--acc);font-weight:600}
+.seg{display:inline-flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:#fff;color:var(--ink);padding:6px 13px;border-radius:9px;cursor:pointer;font-size:13px;transition:.2s}
+.seg button.on{background:var(--acc);border-color:var(--acc);color:#fff;box-shadow:0 4px 12px rgba(91,63,214,.3)}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:11px;padding:8px 16px;cursor:pointer;font-size:13.5px;display:inline-flex;gap:8px;align-items:center;transition:.2s}
+.btn:hover{border-color:var(--soft3)}
+.btn.p{background:linear-gradient(135deg,var(--acc2),var(--acc));border:0;color:#fff;box-shadow:0 6px 16px rgba(91,63,214,.35)}
+.btn.p:hover{transform:translateY(-1px)}
+.chip{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:7px 14px;cursor:pointer;font-size:13px;transition:.2s}
+.chip:hover{border-color:var(--soft3)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mute);font-weight:600;font-size:12px;background:#faf9ff}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.hl td{background:var(--soft);font-weight:600}
+svg text{fill:var(--mute);font-size:11px;font-family:inherit}
+select{font:inherit;font-size:13px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);width:100%}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.big{font-size:44px;font-weight:800;letter-spacing:-.035em;line-height:1;color:var(--ink)}
+.grad{background:linear-gradient(135deg,var(--acc2),var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+.msg{padding:10px 13px;border-radius:11px;font-size:13px;margin-top:10px}
+.msg.err{background:var(--warnSoft);color:var(--warn)}
+.msg.info{background:var(--soft);color:var(--ink)}
+.msg.ok{background:var(--okSoft);color:#1b5e2b}
+.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pop{opacity:0;animation:pop .45s ease-out forwards;animation-delay:var(--d,0s)}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.fadein{opacity:0;animation:fi .6s ease-out forwards;animation-delay:var(--d,0s)}
+@keyframes fi{to{opacity:1}}
+.track{background:var(--soft);border-radius:8px;height:12px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--acc2),var(--acc));border-radius:8px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.fill.lite{background:var(--soft3)}
+.row{display:grid;grid-template-columns:46px 1fr 60px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr auto 1fr;align-items:stretch}
+.flow .arrow{width:34px;position:relative}
+.flow .arrow::before{content:"";position:absolute;left:4px;right:8px;top:50%;height:2px;background:repeating-linear-gradient(90deg,var(--soft3) 0 6px,transparent 6px 11px);background-size:11px 2px;animation:dash 1s linear infinite}
+.flow .arrow::after{content:"";position:absolute;right:2px;top:calc(50% - 5px);border:5px solid transparent;border-left:7px solid var(--soft3)}
+.flow .arrow i{position:absolute;top:calc(50% - 4px);left:0;width:8px;height:8px;border-radius:50%;background:var(--acc2);box-shadow:0 0 10px var(--acc2);animation:travel 1.6s linear infinite;opacity:0}
+.flow .arrow.lit i{opacity:1}
+.flow .arrow.lit::before{background:repeating-linear-gradient(90deg,var(--acc) 0 6px,transparent 6px 11px);background-size:11px 2px}
+.flow .arrow.lit::after{border-left-color:var(--acc)}
+@keyframes dash{to{background-position:11px 0}}
+@keyframes travel{0%{left:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:calc(100% - 10px);opacity:0}}
+.node{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;cursor:pointer;text-align:left;color:var(--ink);transition:transform .25s,box-shadow .25s,border-color .25s;position:relative;min-width:0}
+.node:hover{transform:translateY(-2px);border-color:var(--soft3)}
+.node .nh{display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px;margin-bottom:6px}
+.node .nh svg{color:var(--acc);flex:none}
+.node ul{margin:0;padding-left:16px;font-size:12px;color:var(--mute)}
+.node .shape{font-size:12px;color:var(--mute);text-align:center}
+.node.on{border-color:var(--acc);box-shadow:0 0 0 3px var(--soft2),0 10px 26px rgba(91,63,214,.18);transform:translateY(-3px)}
+.node.on::after{content:"";position:absolute;inset:-1px;border-radius:16px;padding:1.5px;background:linear-gradient(120deg,var(--acc2),transparent 35%,transparent 65%,var(--acc2));background-size:300% 100%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:sheen 2.5s linear infinite;pointer-events:none}
+@keyframes sheen{to{background-position:300% 0}}
+.node.done{border-color:var(--soft3)}
+.repchip{display:flex;justify-content:space-between;font-size:12px;border-radius:7px;padding:3px 8px;margin:3px 0}
+.repchip b{color:var(--acc)}
+@media (max-width:1100px){.flow{grid-template-columns:1fr}.flow .arrow{height:26px;width:auto}.flow .arrow::before,.flow .arrow::after,.flow .arrow i{display:none}}
+.prog{height:4px;background:var(--line);border-radius:4px;margin:14px 0 0;overflow:hidden}
+.prog div{height:100%;background:linear-gradient(90deg,var(--acc2),var(--acc));transition:width .6s}
+.stagehead{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.shapes{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px}
+.shapes span{background:var(--soft);border:1px solid var(--soft2);padding:4px 10px;border-radius:8px}
+.shapes em{color:var(--acc);font-style:normal;font-weight:700}
+.explain3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media (max-width:900px){.explain3{grid-template-columns:1fr}}
+.explain3 div{background:#faf9ff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px}
+.explain3 b{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--acc);margin-bottom:2px}
+.vec{display:flex;flex-wrap:wrap;gap:2px}
+.vec span{width:8px;height:18px;border-radius:2px}
+.units{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.unit{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center;background:#faf9ff}
+.unit b{display:block;font-size:22px;color:var(--acc)}
+.unit span{font-size:12px;color:var(--mute)}
+.verdict{display:flex;gap:10px;align-items:center;font-size:21px;font-weight:800;margin:4px 0 2px}
+.verdict .ck{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none;font-size:15px}
+.ok{color:var(--ok)}.bad{color:var(--warn)}
+.strip{display:flex;gap:5px;margin-top:6px}
+.strip span{flex:1;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11.5px;color:#fff;font-weight:600}
+.scorebox{border:1px solid var(--line);border-radius:14px;padding:12px 16px;text-align:center;background:#faf9ff}
+.scorebox small{color:var(--mute);display:block}
+.scorebox b{font-size:28px;letter-spacing:-.03em}
+.drop{display:block;border:1.5px dashed var(--soft3);border-radius:14px;padding:16px;text-align:center;color:var(--mute);cursor:pointer;font-size:13.5px;background:#faf9ff;transition:.2s}
+.drop.over,.drop:hover{border-color:var(--acc);background:var(--soft)}
+details.explain{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:13px}
+details.explain summary{cursor:pointer;color:var(--acc);font-weight:600}
+details.explain p{color:var(--mute);margin:8px 0 0}
+.scale{position:relative;height:14px;background:var(--soft);border-radius:8px;margin:14px 0 4px}
+.scale .ci{position:absolute;top:0;bottom:0;background:var(--soft3);border-radius:8px;transform-origin:left;animation:grow 1s ease-out both}
+.scale .pt{position:absolute;top:-5px;width:4px;height:24px;background:var(--acc);border-radius:2px;animation:fi .8s .5s both}
+.scale .ch{position:absolute;top:-5px;width:2px;height:24px;background:var(--warn)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+@keyframes barUp{from{transform:scaleY(0)}to{transform:none}}
+.find{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.find .fi{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;flex:none;margin-top:2px;font-weight:700}
+.find b{font-size:13.5px}
+.findbig{border-radius:18px;padding:22px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.findbig::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.findbig .tag{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--c)}
+.findbig h3{font-size:19px;margin:6px 0 8px}
+.findbig p{margin:0;color:var(--mute);font-size:14px}
+.findbig .num{position:absolute;right:18px;top:12px;font-size:46px;font-weight:800;color:var(--c);opacity:.12}
+.cmpcol{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;box-shadow:var(--shadow)}
+.cmpcol.A{border-top:4px solid var(--acc)}.cmpcol.B{border-top:4px solid var(--pink)}
+.cmpcol label{display:block;font-size:12px;color:var(--mute);margin:10px 0 4px}
+.mob{display:none}
+@media (max-width:860px){.app{grid-template-columns:1fr}aside{display:none}.mob{display:flex;overflow-x:auto;gap:6px;margin-bottom:14px}.mob button{flex:none}main{padding:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-5 3 10 3-14 3 13 2-4h3"/></svg></div>
+    <div><b>EEG Identity Lab</b><small>MIT-ADT University · Pune</small></div></div>
+  <nav class="vt" id="side"></nav>
+  <div class="foot"><b><span class="pulse"></span>Research demo</b>Offline · reproducible<br>No data leaves this page</div>
+</aside>
+<main>
+  <div class="mob seg" id="mob"></div>
+  <div class="top">
+    <div class="title"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-5 3 10 3-14 3 13 2-4h3"/></svg></div>
+      <div><h1 id="pageTitle">EEG Identity Lab</h1><p id="pageSub"></p></div></div>
+    <div class="stats">
+      <div class="stat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 010 7M18 14.5c2 .7 3.2 2.6 3.5 5.5"/></svg><div><b>20</b><span>Participants</span></div></div>
+      <div class="stat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h4l2-5 3 10 3-14 3 13 2-4h3"/></svg><div><b>14</b><span>EEG channels</span></div></div>
+      <div class="stat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/></svg><div><b>4 s windows</b><span>aggregated 8 → 32 s</span></div></div>
+    </div>
+  </div>
+
+  <section class="view" id="v-overview">
+    <div class="card">
+      <div class="stagehead"><div class="hd">End-to-end pipeline: from EEG signal to identity prediction</div><button class="btn" data-go="pipeline">Explore each step →</button></div>
+      <div class="flow" id="ovFlow"></div>
+    </div>
+    <div class="grid ov2" style="margin-top:16px">
+      <div class="card"><div class="hd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l2-5 3 10 3-14 3 13 2-4h3"/></svg>Signal &amp; feature representation</div>
+        <p class="note">One real 4-s window (participant P08, Hindi) at each step.</p>
+        <div class="tabs" id="sigTabs"></div><div id="sigBody"></div></div>
+      <div class="card"><div class="hd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4l12 8-12 8z"/></svg>Run live prediction</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 4px"><span class="note" style="margin:0">Direction (enroll → test)</span><span class="seg" id="ovDir"></span></div>
+        <p class="note" style="margin:8px 0 0" id="ovPLabel"></p>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div class="chips" id="ovChips" style="flex:1"></div><button class="btn p" id="ovRun"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8z"/></svg>Run</button></div>
+        <div id="ovOut"><p class="note">Pick a participant and press <b>Run</b>.</p></div></div>
+    </div>
+    <div class="grid ov3" style="margin-top:16px">
+      <div class="card"><div class="hd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Experimental results</div><p class="note">Balanced accuracy [95% CI], 4-s windows, enrollment-only ICA.</p><div id="ovTable"></div></div>
+      <div class="card"><div class="hd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>Confusion matrix <span style="color:var(--mute);font-weight:400;font-size:13px">(Arabic → Hindi)</span></div><p class="note">A bright diagonal means the right person is predicted.</p><div id="ovCM"></div></div>
+      <div class="card"><div class="hd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Key findings &amp; conclusion</div><div id="ovFind" style="margin-top:10px"></div></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-demo">
+    <div class="grid g2">
+      <div class="card">
+        <div class="hd">1 · Choose an input</div>
+        <p class="note">Each sample is 32 s of EEG (8 windows) from the script the model was <b>not</b> trained on.</p>
+        <span class="seg" id="dir"></span>
+        <div class="chips" id="chips"></div>
+        <div style="margin:4px 0 14px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>How much EEG to use</span><b id="nWinL">8 windows · 32 s</b></div>
+          <input type="range" id="nWin" min="1" max="8" value="8"><p class="note" style="margin:0">Slide to 1 window (4 s) and the model becomes less sure.</p></div>
+        <label class="drop" id="drop">⬆ Drop a CSV here or click to browse<br><small>sample files are in <code>dashboard/samples/</code> next to this page</small>
+          <input type="file" id="file" accept=".csv,text/csv" hidden></label>
+        <div id="msg"></div>
+      </div>
+      <div class="card" id="out"><div class="hd">2 · Result</div><p class="note">Pick a sample on the left.</p></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-pipeline">
+    <div class="card">
+      <div class="stagehead"><div><div class="hd">How the system works, step by step</div><p class="note" style="margin:0">Click a step, or press <b>Play</b> to watch the data flow through the system.</p></div>
+        <div style="display:flex;gap:8px"><button class="btn" id="prev">←</button><button class="btn p" id="play">▶ Play</button><button class="btn" id="next">→</button></div></div>
+      <div class="flow" id="pFlow"></div>
+      <div class="prog"><div id="prog"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px" id="stageCard"></div>
+  </section>
+
+  <section class="view" id="v-compare">
+    <div class="card" style="margin-bottom:16px"><div class="hd">Compare two configurations</div>
+      <p class="note" style="margin:0">Change one setting at a time. Where the study ran a paired participant test (Holm-corrected) for that difference, the page shows whether it is statistically significant. A higher number alone is not proof.</p></div>
+    <div class="grid g2"><div class="cmpcol A" id="cA"></div><div class="cmpcol B" id="cB"></div></div>
+    <div class="card" style="margin-top:16px" id="cmpOut"></div>
+  </section>
+
+  <section class="view" id="v-results">
+    <div class="grid g4" id="kpis"></div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><div class="hd">More test EEG → higher accuracy</div><p class="note">Balanced accuracy vs seconds of test EEG (shaded = 95% CI). Chance = 5%.</p><div id="chDur"></div></div>
+      <div class="card"><div class="hd">How much enrollment is needed?</div><p class="note">Accuracy vs seconds of enrollment EEG per person.</p><div id="chEnr"></div></div>
+      <div class="card"><div class="hd">Confusion matrix</div><p class="note">Row = true person, column = predicted. Hover a cell.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="seg" id="cmDir"></span><span class="seg" id="cmRep"></span></div><div id="cm" style="margin-top:10px"></div></div>
+      <div class="card"><div class="hd">Per-participant recall</div><p class="note">Share of each person's windows correctly identified (filter-only, power, logistic).</p><span class="seg" id="psDir"></span><div id="chPS" style="margin-top:10px"></div></div>
+      <div class="card"><div class="hd">Is it muscle artifact?</div><p class="note">Removing high-frequency bands and edge sites lowers accuracy, but identity stays far above chance.</p><div id="chArt"></div></div>
+      <div class="card"><div class="hd">Experimental results</div><p class="note">Enrollment-only ICA, 4-s windows, balanced accuracy [95% CI].</p><div id="tblRes"></div></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-conclusions"><div class="grid g2" id="concl"></div></section>
+
+  <section class="view" id="v-how">
+    <div class="grid g2">
+      <div class="card"><div class="hd">In one paragraph</div><p class="note" style="margin:0">Participants read words in Arabic, then Hindi, while 14 EEG channels were recorded. The recording is cut into 4-second windows. Each window is described by its frequency content (140 band-power numbers) and how channels move together (455 coherence numbers). A classifier learns each person from one script only and must then name them from the other script. Everything that is learned (scaling, ICA, hyperparameters) uses the training script only.</p></div>
+      <div class="card"><div class="hd">Three evaluation units, never mixed</div>
+        <div class="units"><div class="unit"><b>4 s</b><span>one window</span></div><div class="unit"><b>32 s</b><span>8 windows combined</span></div><div class="unit"><b>Block</b><span>all held-out windows → reported accuracy</span></div></div></div>
+      <div class="card"><div class="hd">Input file format (live demo)</div><p class="note" style="margin:0">CSV, one row per 4-s window, with 140 columns named like <code>FP1_delta_log</code> / <code>FP1_delta_rel</code>. Extra columns are ignored. An optional <code>true_participant</code> column enables the correct/incorrect check. Rows with missing values are skipped.</p></div>
+      <div class="card"><div class="hd">Honest caveats</div><p class="note" style="margin:0">Both scripts were recorded in one session with Arabic always first, so this shows cross-<i>task</i> stability within a session, not across days. Group, sex and recording date are partly confounded. Rebuild this page with <code>python scripts/13_export_dashboard.py</code>. Data: Aldhaheri et al., Mendeley 7cdyp2r5cz.</p></div>
+    </div>
+  </section>
+</main>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const $ = s => document.querySelector(s);
+const pct = (x,d=1) => (100*x).toFixed(d)+'%';
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pid = c => 'P'+String(c).padStart(2,'0');
+const fmtP = p => p>0.999 ? '>99.9%' : p<0.001 ? '<0.1%' : pct(p);
+const nice = d => d.replace('->',' → ');
+const DIRS = ['Arabic->Hindi','Hindi->Arabic'];
+const CS = ['var(--acc)','var(--pink)'];
+const BN = ['δ','θ','α','β','γ'], BNAME=['delta','theta','alpha','beta','gamma'], BC=['var(--b1)','var(--b2)','var(--b3)','var(--b4)','var(--b5)'];
+function safe(fn){ try{ return fn() }catch(e){ console.error(e); } }
+
+/* animation helpers: count-up numbers + growing bars */
+function animate(root){
+  if(!root) return;
+  root.querySelectorAll('[data-count]').forEach(el=>{
+    const to=parseFloat(el.dataset.count), dec=+(el.dataset.dec??1), suf=el.dataset.suf||'', t0=performance.now(), dur=900;
+    const step=t=>{ const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3); el.textContent=(to*e).toFixed(dec)+suf; if(k<1) requestAnimationFrame(step); };
+    requestAnimationFrame(step); });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>root.querySelectorAll('[data-w]').forEach(el=>el.style.width=el.dataset.w)));
+}
+const cnt=(x,d=1)=>`<span data-count="${(100*x).toFixed(d)}" data-dec="${d}" data-suf="%">${pct(x,d)}</span>`;
+
+/* navigation (vertical tabs) */
+const VIEWS=[['overview','Overview','M3 11l9-7 9 7v9H3z','EEG Identity Lab','Who is reading? EEG identity recognition across scripts. Enroll a person while they read <b>Arabic</b>, recognise them while they read <b>Hindi</b>, or the reverse.'],
+ ['demo','Live demo','M7 4l12 8-12 8z','Live demo','Give the system 4–32 seconds of EEG and see who it thinks is reading.'],
+ ['pipeline','Pipeline','M4 6h6v4H4zM14 14h6v4h-6zM7 10v6h7','Pipeline','From raw brain signal to an identity decision, one step at a time.'],
+ ['compare','Compare','M8 4v16M16 4v16M3 8h10M11 16h10','Compare','Put two experimental configurations side by side.'],
+ ['results','Results','M4 20V10M10 20V4M16 20v-7M22 20H2','Results','All numbers come from the corrected, leakage-safe analysis.'],
+ ['conclusions','Conclusions','M5 12l5 5L20 7','Conclusions','What this experiment supports, and what it does not.'],
+ ['how','How it works','M12 22a10 10 0 110-20 10 10 0 010 20zM12 16v-4M12 8h.01','How it works','Method, evaluation units and caveats.']];
+let current='overview';
+function go(v){
+  current=v; const meta=VIEWS.find(x=>x[0]===v);
+  $('#pageTitle').textContent=meta[3]; $('#pageSub').innerHTML=meta[4];
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  if(v!=='pipeline') stopPlay();
+  const builders={overview:buildOverview,pipeline:buildPipe,results:buildResults,compare:buildCompare,conclusions:buildConcl};
+  if(builders[v]) safe(builders[v]);
+  animate($('#v-'+v)); window.scrollTo({top:0,behavior:'smooth'});
+}
+$('#side').innerHTML=VIEWS.map(([k,l,d])=>`<button data-v="${k}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>${l}</button>`).join('');
+$('#mob').innerHTML=VIEWS.map(([k,l])=>`<button data-v="${k}">${l}</button>`).join('');
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-v],[data-go]'); if(!b) return; e.preventDefault(); go(b.dataset.v||b.dataset.go); });
+
+/* lookups */
+const LAB={filtered_no_ica:'Filter only',ica_enrollment_only:'Enrollment-only ICA',legacy_full_session_ica:'Full-session ICA (leaky)',power:'Power',coherence:'Coherence',power_plus_coherence:'Power + coherence',logreg:'Logistic regression',shrinkage_lda:'Shrinkage LDA',linear_svm:'Linear SVM'};
+const macro=(d,p,r,m)=>D.macro.find(x=>x.direction===d&&x.preprocessing===p&&x.representation===r&&x.model===m);
+const cvRow=(d,p,r,m)=>p==='legacy_full_session_ica'?D.legacy.find(x=>x.direction===d):D.model_comparison.find(x=>x.direction===d&&x.preprocessing===p&&x.representation===r&&x.model===m);
+
+/* SVG kit: lines draw themselves in, cells pop in */
+function lineChart(series,{xlab,xs,log=true,ymin,ymax=1,step=0.1,W=480,H=230,yfmt=v=>Math.round(v*100)+'%',band}={}){
+  const L=46,R=12,T=12,B=34, all=series.flatMap(s=>s.pts);
+  const xmin=Math.min(...all.map(p=>p.x)), xmax=Math.max(...all.map(p=>p.x)), tx=log?Math.log2:v=>v;
+  const X=v=>L+(tx(v)-tx(xmin))/((tx(xmax)-tx(xmin))||1)*(W-L-R);
+  if(ymin===undefined) ymin=Math.floor(Math.min(...all.map(p=>p.lo??p.y))*10)/10;
+  const cl=v=>Math.max(ymin,Math.min(ymax,v)), Y=v=>T+(1-(cl(v)-ymin)/(ymax-ymin))*(H-T-B);
+  let g='';
+  if(band) band.forEach(b=>g+=`<rect class="fadein" x="${X(b.lo)}" y="${T}" width="${X(b.hi)-X(b.lo)}" height="${H-T-B}" fill="${b.c}" fill-opacity=".14"/><text x="${(X(b.lo)+X(b.hi))/2}" y="${T+13}" text-anchor="middle" style="font-weight:700;font-size:13px;fill:var(--ink)">${b.n}</text>`);
+  for(let v=ymin;v<=ymax+1e-9;v+=step) g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end">${yfmt(v)}</text>`;
+  xs.forEach(v=>g+=`<text x="${X(v)}" y="${H-B+16}" text-anchor="middle">${v}</text>`);
+  g+=`<text x="${(L+W-R)/2}" y="${H-3}" text-anchor="middle">${xlab}</text>`;
+  series.forEach(s=>{
+    if(s.pts[0]&&s.pts[0].lo!=null) g+=`<path class="fadein" style="--d:.4s" d="M${s.pts.map(p=>X(p.x)+','+Y(p.hi)).join('L')}L${s.pts.slice().reverse().map(p=>X(p.x)+','+Y(p.lo)).join('L')}Z" fill="${s.c}" fill-opacity=".14"/>`;
+    g+=`<path class="draw" pathLength="1" d="M${s.pts.map(p=>X(p.x).toFixed(1)+','+Y(p.y).toFixed(1)).join('L')}" fill="none" stroke="${s.c}" stroke-width="${s.w||2.4}" stroke-linejoin="round"/>`;
+    if(s.dots!==false) s.pts.forEach((p,i)=>g+=`<circle class="pop" style="--d:${(.3+i*.12).toFixed(2)}s;transform-origin:${X(p.x)}px ${Y(p.y)}px" cx="${X(p.x)}" cy="${Y(p.y)}" r="4" fill="#fff" stroke="${s.c}" stroke-width="2.2"><title>${s.n||''}: ${yfmt(p.y)} at ${p.x}</title></circle>`);
+  });
+  const leg=series.filter(s=>s.n).map(s=>`<span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px;font-size:12px;color:var(--mute)"><i style="width:14px;height:3px;border-radius:2px;background:${s.c}"></i>${s.n}</span>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg><div>${leg}</div>`;
+}
+function waves(mat,{chs,W=560,H=300,color='var(--acc)',overlay,ocolor='var(--pink)'}={}){
+  const n=mat.length,L=38,R=8,T=8,B=22,rowH=(H-T-B)/n,len=mat[0].length;
+  const all=mat.flat().concat(overlay?overlay.flat():[]).map(Math.abs).sort((a,b)=>a-b), sc=all[Math.floor(all.length*.985)]||1;
+  const X=i=>L+i/(len-1)*(W-L-R); let g='';
+  mat.forEach((row,c)=>{ const y0=T+rowH*(c+.5), k=rowH*.58/sc, path=r=>'M'+r.map((v,i)=>X(i).toFixed(1)+','+(y0-v*k).toFixed(1)).join('L');
+    g+=`<text x="${L-6}" y="${y0+4}" text-anchor="end">${chs[c]}</text>`;
+    if(overlay) g+=`<path d="${path(overlay[c])}" fill="none" stroke="${ocolor}" stroke-width=".9" opacity=".45"/>`;
+    g+=`<path class="draw" pathLength="1" style="animation-delay:${(c*.05).toFixed(2)}s" d="${path(row)}" fill="none" stroke="${color}" stroke-width="1.1"/>`; });
+  for(let s=0;s<=4;s++) g+=`<text x="${L+s/4*(W-L-R)}" y="${H-5}" text-anchor="middle">${s} s</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg>`;
+}
+function heat(mat,{rows,cols,cell=22,lo,hi,fmt=v=>v.toFixed(2),color='var(--acc)',L=40}={}){
+  const nr=mat.length,nc=mat[0].length,T=20, flat=mat.flat(); lo=lo??Math.min(...flat); hi=hi??Math.max(...flat);
+  let g='';
+  mat.forEach((r,i)=>{ if(rows) g+=`<text x="${L-5}" y="${T+cell*(i+.7)}" text-anchor="end">${rows[i]}</text>`;
+    r.forEach((v,j)=>{ const t=(v-lo)/((hi-lo)||1); g+=`<rect class="pop" style="--d:${((i+j)*.012).toFixed(3)}s;transform-origin:${L+j*cell+cell/2}px ${T+i*cell+cell/2}px" x="${L+j*cell}" y="${T+i*cell}" width="${cell-1.5}" height="${cell-1.5}" rx="3" fill="${color}" fill-opacity="${(0.05+0.95*t).toFixed(3)}"><title>${rows?rows[i]:i} · ${cols?cols[j]:j}: ${fmt(v)}</title></rect>`; }); });
+  if(cols) cols.forEach((c,j)=>g+=`<text x="${L+cell*(j+.5)}" y="${T-6}" text-anchor="middle">${c}</text>`);
+  return `<svg viewBox="0 0 ${L+nc*cell+6} ${T+nr*cell+4}" width="100%" style="max-width:${L+nc*cell+6}px">${g}</svg>`;
+}
+const ICONS={wave:'M2 12h4l2-5 3 10 3-14 3 13 2-4h3',gear:'M12 15a3 3 0 100-6 3 3 0 000 6zM4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4',
+ layers:'M12 3l9 5-9 5-9-5zM3 13l9 5 9-5',grid:'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18',net:'M12 5a2 2 0 100-4 2 2 0 000 4zM5 21a2 2 0 100-4 2 2 0 000 4zM19 21a2 2 0 100-4 2 2 0 000 4zM12 5v6M12 11l-6 7M12 11l6 7',target:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 16a4 4 0 100-8 4 4 0 000 8zM12 12h.01'};
+const ic=(k,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${ICONS[k]}"/></svg>`;
+
+/* the 6 pipeline steps */
+const STEPS=[
+ {t:'EEG input',i:'wave',body:'<div class="shape">14 ch × 4 s<br>(1,024 samples)</div>',
+  what:'The brain signal from 14 scalp electrodes is cut into 4-second windows.',why:'A window is one example. Each person gives hundreds of them.',in:'continuous recording',out:'14 × 1,024'},
+ {t:'Preprocessing',i:'gear',body:'<ul><li>Notch 50 + 100 Hz</li><li>Band-pass 1–45 Hz</li><li>Common average ref.</li><li>Enrollment-only ICA</li></ul>',
+  what:'Remove mains hum, slow drift and noise shared by every electrode.',why:'So the model learns brain patterns, not electrical noise.',in:'14 × 1,024 raw',out:'14 × 1,024 clean',subs:['Filtering','Common average','ICA']},
+ {t:'Feature extraction',i:'layers',body:'<ul><li>Welch PSD</li><li>Log &amp; relative power</li><li>Band coherence</li></ul>',
+  what:'Measure how much of each brain rhythm (δ θ α β γ) is present, and how strongly channels move together.',why:'Rhythms and connectivity differ from person to person, like a fingerprint.',in:'14 × 1,024',out:'14 × 5 power · 91 × 5 coherence',subs:['Welch PSD','Band power','Coherence']},
+ {t:'Representation',i:'grid',body:'<div class="repchip" style="background:var(--soft)">Power <b>140</b></div><div class="repchip" style="background:var(--pinkSoft)">Coherence <b>455</b></div><div class="repchip" style="background:var(--soft2)">Fusion <b>595</b></div>',
+  what:'Flatten the feature grids into one long list of numbers.',why:'Classifiers need a fixed-length vector as input.',in:'feature grids',out:'140 / 455 / 595 numbers'},
+ {t:'Classification',i:'net',body:'<ul><li>Logistic regression</li><li>Shrinkage LDA</li><li>Linear SVM</li></ul>',
+  what:'A model trained on one script only scores how well the vector matches each of the 20 people.',why:'Testing on the other script shows whether identity survives a change of task.',in:'1 vector',out:'20 scores'},
+ {t:'Decision',i:'target',body:'<div class="shape">20-way identity<br>(8 windows = 32 s)</div>',
+  what:'Combine the scores of several windows and pick the most likely person.',why:'More evidence makes the decision more reliable.',in:'8 × 20 scores',out:'1 identity'}];
+const flowHTML=active=>STEPS.map((s,i)=>`${i?`<div class="arrow ${i<=active?'lit':''}"><i style="animation-delay:${(i*.25).toFixed(2)}s"></i></div>`:''}<button class="node ${i===active?'on':i<active?'done':''}" data-step="${i}"><div class="nh">${ic(s.i)}${s.t}</div>${s.body}</button>`).join('');
+
+/* live scoring */
+function score(model,X){ return X.map(x=>{ const z=model.coef.map((w,k)=>{let s=model.intercept[k]; for(let j=0;j<w.length;j++) s+=w[j]*(x[j]-model.mean[j])/model.scale[j]; return s;});
+  const m=Math.max(...z), lse=m+Math.log(z.reduce((a,v)=>a+Math.exp(v-m),0)); return z.map(v=>v-lse); }); }
+function predict(d,X){
+  const model=D.models[d], lp=score(model,X), tot=model.classes.map((_,k)=>lp.reduce((a,r)=>a+r[k],0));
+  const m=Math.max(...tot), ex=tot.map(v=>Math.exp(v-m)), S=ex.reduce((a,b)=>a+b,0);
+  const order=ex.map((v,k)=>[v/S,model.classes[k]]).sort((a,b)=>b[0]-a[0]), c0=order[0][1], k0=model.classes.indexOf(c0);
+  return {order,c0,p0:order[0][0],votes:lp.map(r=>model.classes[r.indexOf(Math.max(...r))]),winP:lp.map(r=>Math.exp(r[k0])),model};
+}
+const verdictHTML=(R,truth)=>{ const ok=truth==null?null:truth===R.c0;
+  return `<div class="verdict ${ok===null?'':ok?'ok':'bad'}"><span class="ck pop" style="background:${ok===false?'var(--warn)':ok?'var(--ok)':'var(--acc)'}">${ok===false?'✕':'✓'}</span>Identified as ${pid(R.c0)}${ok===null?'':ok?' — correct':` — actually ${pid(truth)}`}</div>`; };
+const stripHTML=R=>`<div class="strip">${R.votes.map((v,i)=>`<span class="pop" style="--d:${(.15+i*.09).toFixed(2)}s;background:color-mix(in srgb,${v===R.c0?'var(--acc)':'var(--warn)'} ${Math.round(40+60*R.winP[i])}%,#fff)" title="window ${i+1}: votes ${pid(v)}">${v===R.c0?Math.round(100*R.winP[i])+'%':pid(v)}</span>`).join('')}</div>`;
+
+/* OVERVIEW */
+let ovD='Arabic->Hindi', ovS=null, sigTab=0, ovTimer=null, ovStep=0;
+const SIGTABS=['Time series','PSD (Welch)','Band power','Coherence','Feature vector'];
+function vecHTML(rep){ const S=D.signal, pow=[...S.bp_log.flat(),...S.bp_rel.flat()], up=[]; S.coh.forEach(m=>{for(let i=0;i<14;i++)for(let j=i+1;j<14;j++)up.push(m[i][j]);});
+  const norm=a=>{const lo=Math.min(...a),hi=Math.max(...a);return a.map(v=>(v-lo)/((hi-lo)||1));};
+  const sq=(a,c,off)=>a.map((v,i)=>`<span class="pop" style="--d:${((i+off)*.0025).toFixed(3)}s;background:color-mix(in srgb,${c} ${Math.round(15+85*v)}%,#fff)"></span>`).join('');
+  return `${rep!=='coherence'?`<p class="note" style="margin:0 0 4px">Power · 70 log + 70 relative = <b>140</b></p><div class="vec">${sq(norm(pow),'var(--acc)',0)}</div>`:''}
+   ${rep!=='power'?`<p class="note" style="margin:12px 0 4px">Coherence · 91 pairs × 5 bands = <b>455</b></p><div class="vec">${sq(norm(up),'var(--pink)',rep==='coherence'?0:140)}</div>`:''}
+   <div class="msg info" style="margin-top:12px">Final feature vector: <b>${rep==='power'?140:rep==='coherence'?455:595}</b> numbers for this one 4-s window.</div>`; }
+function sigHTML(k){ const S=D.signal, ch=S.channels;
+  if(k===0) return waves(S.car.slice(0,7),{chs:ch.slice(0,7),H:230})+`<p class="note" style="margin:6px 0 0">Cleaned EEG, 7 of 14 channels shown.</p>`;
+  if(k===1){ const b=Object.values(S.bands).map((r,i)=>({lo:r[0],hi:r[1],c:BC[i],n:BN[i]})), ys=S.psd_db.flatMap(r=>r.slice(2,91));
+    return lineChart(S.psd_db.map((r,c)=>({c:c===12?'var(--acc)':'var(--soft3)',w:c===12?2.6:1.1,dots:false,pts:S.freqs.map((x,j)=>({x,y:r[j]})).filter(p=>p.x>=1&&p.x<=45)})),{xlab:'Frequency (Hz)',xs:[1,4,8,13,30,45],log:false,ymin:Math.floor(Math.min(...ys)/10)*10,ymax:Math.ceil(Math.max(...ys)/10)*10,step:10,yfmt:v=>v+' dB',band:b,H:230})+`<p class="note" style="margin:6px 0 0">Power spectrum of every channel (O1 highlighted) with the five rhythm bands.</p>`; }
+  if(k===2) return heat(ch.map((_,c)=>S.bp_rel.map(b=>b[c])),{rows:ch,cols:BN,cell:15,lo:0,fmt:v=>pct(v)})+`<p class="note" style="margin:6px 0 0">Relative power per channel and band. 14 × 5 × 2 (log + relative) = <b>140</b>.</p>`;
+  if(k===3) return heat(S.coh[2],{rows:ch,cols:ch.map(c=>c.replace('FP','Fp')),cell:15,lo:0,hi:1})+`<p class="note" style="margin:6px 0 0">Alpha-band coherence between every pair. 91 pairs × 5 bands = <b>455</b>.</p>`;
+  return vecHTML('power_plus_coherence'); }
+function buildOverview(){
+  $('#ovFlow').innerHTML=flowHTML(ovStep);
+  clearInterval(ovTimer); ovTimer=setInterval(()=>{ if(current!=='overview') return; ovStep=(ovStep+1)%STEPS.length; $('#ovFlow').innerHTML=flowHTML(ovStep); },2200);
+  $('#sigTabs').innerHTML=SIGTABS.map((t,i)=>`<button data-sig="${i}" class="${i===sigTab?'on':''}">${t}</button>`).join('');
+  $('#sigBody').innerHTML=safe(()=>sigHTML(sigTab))||'';
+  $('#ovDir').innerHTML=DIRS.map(d=>`<button data-ovd="${d}" class="${d===ovD?'on':''}">${nice(d)}</button>`).join('');
+  const ss=D.samples.filter(s=>s.model===ovD); if(!ovS||!ss.includes(ovS)) ovS=ss[0];
+  $('#ovPLabel').textContent=`Participant (test script: ${D.models[ovD].test})`;
+  $('#ovChips').innerHTML=ss.map(s=>`<button class="chip ${s===ovS?'on':''}" data-ovs="${D.samples.indexOf(s)}" title="${s.label}">${pid(s.participant)}${s.label==='misidentified'?' ⚠':''}</button>`).join('');
+  const c=x=>x?`${x.balanced_accuracy.toFixed(3)} <span style="color:var(--mute);font-weight:400">[${x.ba_ci95_low.toFixed(3)}, ${x.ba_ci95_high.toFixed(3)}]</span>`:'—';
+  const row=(r,m)=>`<tr class="${r==='power_plus_coherence'?'hl':''}"><td>${LAB[r]}</td><td>${m==='logreg'?'Logistic':LAB[m]}</td><td class="n">${c(macro(DIRS[0],'ica_enrollment_only',r,m))}</td><td class="n">${c(macro(DIRS[1],'ica_enrollment_only',r,m))}</td></tr>`;
+  $('#ovTable').innerHTML=`<table><tr><th>Features</th><th>Model</th><th class="n">Arabic → Hindi</th><th class="n">Hindi → Arabic</th></tr>${row('power','logreg')}${row('coherence','logreg')}${row('power_plus_coherence','logreg')}${row('power','linear_svm')}</table>`;
+  const cm=D.confusion['power|Arabic->Hindi'], lab=cm.map((_,i)=>(i===0||i%5===4)?i+1:'');
+  $('#ovCM').innerHTML=heat(cm,{rows:lab,cols:lab,cell:13,lo:0,hi:1,L:24,fmt:v=>pct(v)})+`<p class="note" style="margin:4px 0 0">True identity (rows) × predicted identity (columns).</p>`;
+  $('#ovFind').innerHTML=FINDINGS.map(f=>`<div class="find"><span class="fi" style="background:${f.c}">${f.ic}</span><div><b>${f.short}:</b> <span style="color:var(--mute)">${f.sum}</span></div></div>`).join('');
+}
+function ovRun(){ if(!ovS) return; const csv=parseCSV(ovS.csv), model=D.models[ovD], idx=model.features.map(f=>csv.head.indexOf(f));
+  const R=predict(ovD,csv.rows.map(r=>idx.map(i=>parseFloat(r[i]))));
+  $('#ovOut').innerHTML=`<div style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;margin-top:6px"><div>${verdictHTML(R,ovS.participant)}<p class="note" style="margin:0">Model trained on <b>${model.train}</b>, tested on 8 windows (32 s).</p></div>
+    <div class="scorebox pop"><small>Combined score</small><b class="grad">${fmtP(R.p0)}</b></div></div>
+    <p class="note" style="margin:10px 0 0">Window-wise P(${pid(R.c0)})</p>${stripHTML(R)}
+    <p class="note" style="margin:10px 0 0">${R.c0===ovS.participant?`All 20 people were scored and ${pid(R.c0)} matched best.`:'One of the rare misidentifications: the model is confidently wrong here.'} <a href="#" data-go="demo" style="color:var(--acc)">Open full demo →</a></p>`;
+  animate($('#ovOut')); }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-sig],[data-ovd],[data-ovs],#ovRun'); if(!b) return;
+  if(b.dataset.sig!==undefined){ sigTab=+b.dataset.sig; $('#sigTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); $('#sigBody').innerHTML=safe(()=>sigHTML(sigTab))||''; }
+  else if(b.dataset.ovd){ ovD=b.dataset.ovd; ovS=null; buildOverview(); $('#ovOut').innerHTML='<p class="note">Pick a participant and press <b>Run</b>.</p>'; }
+  else if(b.dataset.ovs){ ovS=D.samples[+b.dataset.ovs]; $('#ovChips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b)); safe(ovRun); }
+  else safe(ovRun); });
+
+/* LIVE DEMO */
+let dir='Arabic->Hindi', nWin=8, last=null;
+function parseCSV(text){ const lines=text.replace(/^﻿/,'').split(/\r?\n/).filter(l=>l.trim()); if(lines.length<2) throw new Error('The file has no data rows.');
+  return {head:lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,'')), rows:lines.slice(1).map(l=>l.split(','))}; }
+function showErr(m){ $('#msg').innerHTML=`<div class="msg err">⚠ ${m}</div>`; }
+function run(text,name){
+  $('#msg').innerHTML=''; const model=D.models[dir]; let csv; try{ csv=parseCSV(text); }catch(e){ return showErr(e.message); }
+  const idx=model.features.map(f=>csv.head.indexOf(f)), miss=model.features.filter((f,i)=>idx[i]<0);
+  if(miss.length) return showErr(`Missing ${miss.length} of 140 required columns (e.g. ${esc(miss.slice(0,3).join(', '))}). See "How it works → Input file format".`);
+  const ti=csv.head.indexOf('true_participant'), X=[], truth=new Set(); let skipped=0;
+  csv.rows.forEach(r=>{ const v=idx.map(i=>parseFloat(r[i])); if(v.some(n=>!isFinite(n))){skipped++;return;} X.push(v); if(ti>=0&&r[ti]&&r[ti].trim()) truth.add(parseInt(r[ti])); });
+  if(!X.length) return showErr('No valid rows (all rows had missing or non-numeric values).');
+  last={X:X.slice(0,2000),truth:truth.size===1?[...truth][0]:null,name,skipped}; evaluate();
+}
+function evaluate(){
+  if(!last) return; const n=Math.min(nWin,last.X.length), R=predict(dir,last.X.slice(0,n)), agree=R.votes.filter(v=>v===R.c0).length;
+  $('#nWinL').textContent=`${n} window${n>1?'s':''} · ${n*4} s`+(last.X.length<nWin?` (file has ${last.X.length})`:'');
+  const conf=R.p0>0.95?'very high':R.p0>0.8?'high':R.p0>0.5?'moderate':'low';
+  $('#out').innerHTML=`<div class="hd">2 · Result <span style="color:var(--mute);font-weight:400;font-size:13px">· ${esc(last.name)}</span></div>
+   <div style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center">${verdictHTML(R,last.truth)}<div class="scorebox pop"><small>Combined score</small><b class="grad">${fmtP(R.p0)}</b><small>${conf}</small></div></div>
+   <p class="note">Trained on <b>${R.model.train}</b> only · tested on ${n} window${n>1?'s':''} (${n*4} s) · ${agree}/${n} windows pick ${pid(R.c0)} on their own.</p>
+   <p class="note" style="margin:10px 0 0">Each 4-s window alone: probability for ${pid(R.c0)}</p>${stripHTML(R)}
+   <p class="note" style="margin-top:16px">Top 5 of 20 candidates</p>
+   ${R.order.slice(0,5).map(([p,c],i)=>`<div class="row"><b>${pid(c)}</b><div class="track"><div class="fill ${i?'lite':''}" data-w="${Math.max(1,100*p)}%"></div></div><span style="text-align:right">${fmtP(p)}</span></div>`).join('')}
+   ${last.skipped?`<div class="msg info">${last.skipped} row(s) with missing values were skipped.</div>`:''}
+   <details class="explain"><summary>What does this score mean?</summary>
+    <p>The scores for the 20 known people always add up to 100%. ${fmtP(R.p0)} means that <b>among these 20 people</b>, ${pid(R.c0)} is the best match. It does not mean "certain in general".</p>
+    <p>The model always picks one of the 20 and can't answer "nobody". Combining windows treats them as independent evidence, so the combined score is overconfident. Each window's own score (the strip) is more honest.</p>
+    <p>Across the whole held-out block it is right for about <b>93%</b> of 4-s windows and <b>~98%</b> of 32-s decisions. Chance is 5%.</p></details>`;
+  animate($('#out'));
+}
+function buildDemo(){
+  $('#dir').innerHTML=DIRS.map(k=>`<button data-d="${k}" class="${k===dir?'on':''}">${nice(k)}</button>`).join('');
+  $('#chips').innerHTML=D.samples.filter(s=>s.model===dir).map(s=>`<button class="chip" data-i="${D.samples.indexOf(s)}">${pid(s.participant)} · <span style="opacity:.75">${s.label}</span></button>`).join('')+`<button class="chip" id="rnd">🎲 Random person &amp; moment</button>`;
+}
+$('#dir').onclick=e=>{ const b=e.target.closest('[data-d]'); if(!b) return; dir=b.dataset.d; last=null; buildDemo(); $('#msg').innerHTML=''; $('#out').innerHTML='<div class="hd">2 · Result</div><p class="note">Pick a sample on the left.</p>'; };
+$('#chips').onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; document.querySelectorAll('#chips .chip').forEach(x=>x.classList.toggle('on',x===c));
+  if(c.id==='rnd') return safe(()=>{ const pool=D.pool[dir], subs=[...new Set(pool.subject)], s=subs[Math.floor(Math.random()*subs.length)], idx=pool.subject.map((v,i)=>v===s?i:-1).filter(i=>i>=0), st=Math.floor(Math.random()*(idx.length-8));
+    last={X:idx.slice(st,st+8).map(i=>pool.X[i]),truth:s,name:`random: ${pid(s)}, ${st*4}–${st*4+32} s into the ${D.models[dir].test} block`,skipped:0}; $('#msg').innerHTML=''; evaluate(); });
+  const s=D.samples[c.dataset.i]; safe(()=>run(s.csv,s.file)); };
+$('#nWin').addEventListener('input',e=>{ nWin=+e.target.value; safe(evaluate); });
+function readFile(f){ if(!f) return; if(f.size>20e6) return showErr('File is larger than 20 MB.'); const r=new FileReader(); r.onload=()=>safe(()=>run(String(r.result),f.name)); r.onerror=()=>showErr('Could not read the file.'); r.readAsText(f); }
+$('#file').onchange=e=>{ readFile(e.target.files[0]); e.target.value=''; };
+const dz=$('#drop'); ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')})); ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over')})); dz.addEventListener('drop',e=>readFile(e.dataTransfer.files[0]));
+
+/* PIPELINE */
+const P={step:0,sub:0,ch:12,band:2,rep:'power_plus_coherence',pdir:'Arabic->Hindi',pre:'ica_enrollment_only',prep:'power',model:'logreg'};
+let playT=null;
+const chSel=()=>`<select id="chSel" style="width:auto;display:inline-block;padding:4px 8px">${D.signal.channels.map((c,i)=>`<option value="${i}" ${i===P.ch?'selected':''}>${c}</option>`).join('')}</select>`;
+const subTabs=k=>`<div class="tabs">${STEPS[k].subs.map((t,i)=>`<button data-sub="${i}" class="${i===P.sub?'on':''}">${t}</button>`).join('')}</div>`;
+function stepVisual(){
+  const S=D.signal, ch=S.channels;
+  if(P.step===0) return `<div class="grid g2"><div>${waves(S.raw,{chs:ch,H:330})}</div><div><table><tr><td>Channels</td><td class="n">14 (10–20 system)</td></tr><tr><td>Sampling rate</td><td class="n">256 Hz</td></tr><tr><td>Window</td><td class="n">4 s = 1,024 samples</td></tr><tr><td>Windows overlap?</td><td class="n">No</td></tr><tr><td>Event markers</td><td class="n">None → block level</td></tr></table>
+     <div class="units"><div class="unit"><b data-count="14" data-dec="0">14</b><span>channels</span></div><div class="unit"><b data-count="256" data-dec="0">256</b><span>samples / s</span></div><div class="unit"><b data-count="1024" data-dec="0">1024</b><span>per window</span></div></div>
+     <p class="note" style="margin-top:12px">Raw signal from participant P08, Hindi block, 20–24 s of chunk 3.</p></div></div>`;
+  if(P.step===1){
+    if(P.sub===0) return subTabs(1)+`<div class="grid g2"><div><p class="note">Channel ${chSel()} · <span style="color:var(--pink)">pink = raw</span>, <span style="color:var(--acc)">purple = filtered</span></p>${waves([S.filtered[P.ch]],{chs:[ch[P.ch]],overlay:[S.raw[P.ch]],H:150})}
+      <p class="note" style="margin-top:10px">Filter response: passes 1–45 Hz, blocks the rest.</p>${lineChart([{c:'var(--acc)',dots:false,pts:S.filter_f.map((f,k)=>({x:f,y:Math.max(-60,S.filter_db[k])})).filter(p=>p.x<=100)}],{xlab:'Hz',xs:[0,20,45,60,80,100],log:false,ymin:-60,ymax:5,step:15,yfmt:v=>Math.round(v)+' dB',H:180})}</div>
+      <div><p class="note">Spectrum before (pink) and after (purple). The 50 Hz mains spike disappears.</p>${lineChart([{c:'var(--pink)',dots:false,w:1.6,pts:S.freqs.map((f,k)=>({x:f,y:S.psd_raw_db[P.ch][k]})).filter(p=>p.x>0)},{c:'var(--acc)',dots:false,pts:S.freqs.map((f,k)=>({x:f,y:S.psd_db[P.ch][k]})).filter(p=>p.x>0)}],{xlab:'Hz',xs:[1,10,20,45,50,100],log:false,ymin:Math.floor(Math.min(...S.psd_db[P.ch])/10)*10,ymax:Math.ceil(Math.max(...S.psd_raw_db[P.ch])/10)*10,step:10,yfmt:v=>v+' dB',H:300})}</div></div>`;
+    if(P.sub===1){ const avg=S.filtered[0].map((_,t)=>S.filtered.reduce((a,r)=>a+r[t],0)/14);
+      return subTabs(1)+`<div class="grid g2"><div><p class="note">The shared average (top row) is subtracted from every channel.</p>${waves([avg,...S.car],{chs:['mean',...ch],H:340})}</div>
+        <div><div class="msg info" style="margin-top:0;font-size:15px">x′<sub>c</sub>(t) = x<sub>c</sub>(t) − <sup>1</sup>⁄<sub>14</sub> Σ<sub>k</sub> x<sub>k</sub>(t)</div><p class="note" style="margin-top:12px">Channel ${chSel()} · <span style="color:var(--pink)">before</span> / <span style="color:var(--acc)">after</span></p>${waves([S.car[P.ch]],{chs:[ch[P.ch]],overlay:[S.filtered[P.ch]],H:150})}<p class="note">Noise common to all electrodes (for example reference drift) cancels out. Differences between brain areas remain.</p></div></div>`; }
+    return subTabs(1)+`<div class="grid g2"><div><svg viewBox="0 0 460 220" width="100%"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--acc)"/></marker></defs>
+      <rect class="pop" style="transform-origin:105px 62px" x="10" y="20" width="190" height="84" rx="14" fill="var(--soft)" stroke="var(--acc)"/><text x="105" y="52" text-anchor="middle" style="font-size:14px;fill:var(--ink);font-weight:700">Training script</text><text x="105" y="74" text-anchor="middle">fit ICA, find blink sources</text>
+      <path class="draw" pathLength="1" d="M204 62H254" stroke="var(--acc)" stroke-width="2.5" marker-end="url(#ar)"/>
+      <rect class="pop" style="--d:.3s;transform-origin:355px 62px" x="260" y="20" width="190" height="84" rx="14" fill="#fff" stroke="var(--line)"/><text x="355" y="52" text-anchor="middle" style="font-size:14px;fill:var(--ink);font-weight:700">Held-out script</text><text x="355" y="74" text-anchor="middle">apply the same unmixing</text>
+      <rect class="pop" style="--d:.6s;transform-origin:230px 166px" x="10" y="128" width="440" height="76" rx="14" fill="var(--warnSoft)" stroke="var(--warn)" stroke-dasharray="5 4"/><text x="230" y="158" text-anchor="middle" style="font-size:14px;fill:var(--warn);font-weight:700">✕ Leaky: fit ICA on both scripts together</text><text x="230" y="180" text-anchor="middle">the cleaning step has already "seen" the test data</text></svg></div>
+      <div><div class="big grad">0</div><p class="note">blink components were removed in all 40 fits, so ICA did not change the data here. Its role is to keep the pipeline <b>leakage-safe</b>.</p>
+      <table><tr><th>Arabic → Hindi · power · logistic</th><th class="n">Accuracy</th></tr>${['filtered_no_ica','ica_enrollment_only','legacy_full_session_ica'].map(p=>{const r=macro('Arabic->Hindi',p,'power','logreg');return r?`<tr><td>${LAB[p]}</td><td class="n">${pct(r.balanced_accuracy)}</td></tr>`:''}).join('')}</table></div></div>`; }
+  if(P.step===2){ const bands=Object.values(S.bands).map((b,k)=>({lo:b[0],hi:b[1],c:BC[k],n:BN[k]}));
+    if(P.sub===0){ const ys=S.psd_db[P.ch].slice(2,91);
+      return subTabs(2)+`<div class="grid g2"><div><p class="note">The 4-s window is split into three overlapping 2-s pieces. Each piece gets a spectrum, and the three are averaged.</p>
+        <svg viewBox="0 0 460 96" width="100%">${[0,1,2].map(s=>`<rect class="pop" style="--d:${s*.25}s;transform-origin:${125+s*105}px ${22+s*24}px" x="${20+s*105}" y="${12+s*24}" width="210" height="20" rx="6" fill="var(--acc)" fill-opacity="${.55+.2*s}"/><text x="${125+s*105}" y="${26+s*24}" text-anchor="middle" style="fill:#fff;font-weight:600">piece ${s+1}: ${s}–${s+2} s</text>`).join('')}<line x1="20" x2="440" y1="90" y2="90" stroke="var(--line)"/></svg>
+        <div class="msg info">Averaging three noisy spectra gives one stable one. Settings: 512-sample Hann window, 50% overlap.</div></div>
+        <div><p class="note">Channel ${chSel()}: the averaged spectrum and the five rhythm bands</p>${lineChart([{c:'var(--acc)',dots:false,pts:S.freqs.map((x,k)=>({x,y:S.psd_db[P.ch][k]})).filter(p=>p.x>=1&&p.x<=45)}],{xlab:'Frequency (Hz)',xs:[1,4,8,13,30,45],log:false,ymin:Math.floor(Math.min(...ys)/10)*10,ymax:Math.ceil(Math.max(...ys)/10)*10,step:10,yfmt:v=>v+' dB',band:bands,H:260})}</div></div>`; }
+    if(P.sub===1){ const t=m=>ch.map((_,c)=>m.map(b=>b[c]));
+      return subTabs(2)+`<div class="grid g2"><div><p class="note"><b>Absolute</b> (log₁₀): how strong each rhythm is</p>${heat(t(S.bp_log),{rows:ch,cols:BN,cell:28,fmt:v=>v.toFixed(2)})}</div>
+        <div><p class="note"><b>Relative</b>: each rhythm's share of total power (rows sum to 100%)</p>${heat(t(S.bp_rel),{rows:ch,cols:BN,cell:28,lo:0,fmt:v=>pct(v)})}
+        <div class="units"><div class="unit"><b>14</b><span>channels</span></div><div class="unit"><b>× 5</b><span>bands</span></div><div class="unit"><b>× 2</b><span>= 140 numbers</span></div></div></div></div>`; }
+    return subTabs(2)+`<div class="grid g2"><div><div class="seg" style="margin-bottom:10px">${BN.map((b,k)=>`<button data-band="${k}" class="${k===P.band?'on':''}">${b} ${BNAME[k]}</button>`).join('')}</div>${heat(S.coh[P.band],{rows:ch,cols:ch.map(c=>c.replace('FP','Fp')),cell:24,lo:0,hi:1})}</div>
+      <div><p class="note">Coherence (0–1) measures how consistently two electrodes oscillate together in a band. It captures how brain areas <b>connect</b>, not just how active they are.</p>
+      <div class="units"><div class="unit"><b>91</b><span>pairs (14 choose 2)</span></div><div class="unit"><b>× 5</b><span>bands</span></div><div class="unit"><b>455</b><span>numbers</span></div></div>
+      <p class="note" style="margin-top:12px">The matrix is symmetric and its diagonal is always 1, so only the upper triangle is kept.</p></div></div>`; }
+  if(P.step===3) return `<div class="seg" style="margin-bottom:14px">${['power','coherence','power_plus_coherence'].map(r=>`<button data-rep="${r}" class="${r===P.rep?'on':''}">${LAB[r]}</button>`).join('')}</div>${vecHTML(P.rep)}
+     <p class="note" style="margin-top:12px">Each cell is one number; darker = larger. One row of the sample CSV files is exactly the 140-number power vector.</p>`;
+  if(P.step===4){ const r=macro(P.pdir,P.pre,P.prep,P.model), cv=cvRow(P.pdir,P.pre,P.prep,P.model);
+    const opt=(k,vals,lab)=>`<p class="note" style="margin:10px 0 6px">${lab}</p><div class="seg">${vals.map(v=>`<button data-pk="${k}" data-pv="${v}" class="${P[k]===v?'on':''}" ${macro(k==='pdir'?v:P.pdir,k==='pre'?v:P.pre,k==='prep'?v:P.prep,k==='model'?v:P.model)?'':'disabled'}>${LAB[v]||nice(v)}</button>`).join('')}</div>`;
+    return `<div class="grid g2"><div>${opt('pdir',DIRS,'Direction')}${opt('pre',['filtered_no_ica','ica_enrollment_only','legacy_full_session_ica'],'Preprocessing')}${opt('prep',['power','coherence','power_plus_coherence'],'Features')}${opt('model',['logreg','shrinkage_lda','linear_svm'],'Classifier')}
+      <div class="msg info" style="margin-top:14px"><b>No-leakage rule:</b> scaling and hyperparameter choice use only the training script (3-fold CV across its files). The held-out script is scored once, at the end.</div></div>
+      <div>${r?`<p class="note" style="margin:10px 0 4px">Accuracy on the unseen script (4-s windows)</p><div class="big grad">${cnt(r.balanced_accuracy)}</div>
+      <div class="scale"><div class="ci" style="left:${r.ba_ci95_low*100}%;width:${(r.ba_ci95_high-r.ba_ci95_low)*100}%"></div><div class="ch" style="left:5%"></div><div class="pt" style="left:calc(${r.balanced_accuracy*100}% - 2px)"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mute)"><span>0%</span><span style="color:var(--warn)">▲ chance 5%</span><span>100%</span></div>
+      <div class="row" style="grid-template-columns:150px 1fr 56px;margin-top:16px"><span>Inside training script</span><div class="track"><div class="fill lite" data-w="${cv?100*cv.nested_cv_balanced_accuracy:0}%"></div></div><b>${cv?pct(cv.nested_cv_balanced_accuracy):'—'}</b></div>
+      <div class="row" style="grid-template-columns:150px 1fr 56px"><span>Unseen script</span><div class="track"><div class="fill" data-w="${100*r.balanced_accuracy}%"></div></div><b>${pct(r.balanced_accuracy)}</b></div>
+      <p class="note" style="margin-top:10px">95% CI ${pct(r.ba_ci95_low)}–${pct(r.ba_ci95_high)} · macro-F1 ${pct(r.macro_f1)} · CV picked <code>${esc(String(cv?.selected_parameters||'—').replace(/[{}']/g,''))}</code>. The gap between the two bars is the real cost of switching scripts.</p>
+      ${P.pre==='legacy_full_session_ica'?'<div class="msg err">This configuration leaks test data through ICA. It is shown for comparison only.</div>':''}`:'<div class="msg info">This combination was not run in the study.</div>'}</div></div>`; }
+  const td=d=>D.test_duration.filter(x=>x.direction===d), at=s=>td('Arabic->Hindi').find(x=>x.test_evidence_seconds===s).balanced_accuracy;
+  return `<div class="grid g2"><div><p class="note">Each window gives 20 probabilities. Summing the log-probabilities of consecutive windows and picking the highest total gives a decision over longer evidence.</p>
+    <div class="units"><div class="unit"><b>${cnt(at(4))}</b><span>4 s · 1 window</span></div><div class="unit"><b>${cnt(at(16))}</b><span>16 s · 4 windows</span></div><div class="unit"><b>${cnt(at(32))}</b><span>32 s · 8 windows</span></div></div>
+    <p class="note" style="margin-top:12px">Arabic → Hindi, enrollment-only ICA, power, logistic. The headline accuracy is the 4-s unit averaged over the whole held-out block.</p><button class="btn p" data-go="demo">Try it live →</button></div>
+    <div>${lineChart(DIRS.map((d,i)=>({n:nice(d),c:CS[i],pts:td(d).map(x=>({x:x.test_evidence_seconds,y:x.balanced_accuracy,lo:x.ba_ci95_low,hi:x.ba_ci95_high}))})),{xlab:'seconds of test EEG',xs:[4,8,16,32],H:250})}</div></div>`;
+}
+function buildPipe(){
+  $('#pFlow').innerHTML=flowHTML(P.step);
+  $('#prog').style.width=((P.step+1)/STEPS.length*100)+'%';
+  const s=STEPS[P.step];
+  $('#stageCard').innerHTML=`<div class="stagehead"><div class="hd" style="font-size:19px">${ic(s.i,24)}<span><span class="kick" style="display:block">Step ${P.step+1} of 6</span>${s.t}</span></div>
+     <div class="shapes"><span>${s.in}</span><em>→</em><span><b>${s.out}</b></span></div></div>
+    <div class="explain3"><div><b>What happens</b>${s.what}</div><div><b>Why it matters</b>${s.why}</div><div><b>Data shape</b>${s.in} → ${s.out}</div></div>
+    <div>${safe(stepVisual)||'<p class="note">This step could not be drawn.</p>'}</div>`;
+  $('#stageCard').style.animation='none'; void $('#stageCard').offsetWidth; $('#stageCard').style.animation='rise .45s both';
+  animate($('#stageCard'));
+}
+function setStep(i){ P.step=(i+STEPS.length)%STEPS.length; P.sub=0; buildPipe(); }
+function stopPlay(){ clearInterval(playT); playT=null; const b=$('#play'); if(b) b.textContent='▶ Play'; }
+$('#play').onclick=()=>{ if(playT) return stopPlay(); $('#play').textContent='❚❚ Pause'; setStep(0); playT=setInterval(()=>{ if(P.step===STEPS.length-1) return stopPlay(); setStep(P.step+1); },4500); };
+$('#prev').onclick=()=>{ stopPlay(); setStep(P.step-1); };
+$('#next').onclick=()=>{ stopPlay(); setStep(P.step+1); };
+document.addEventListener('click',e=>{ const n=e.target.closest('.node'); if(!n) return;
+  if(n.closest('#ovFlow')){ P.step=+n.dataset.step; P.sub=0; go('pipeline'); } else { stopPlay(); setStep(+n.dataset.step); } });
+$('#stageCard').addEventListener('change',e=>{ if(e.target.id==='chSel'){ P.ch=+e.target.value; buildPipe(); } });
+$('#stageCard').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.disabled) return;
+  if(b.dataset.sub!==undefined){ stopPlay(); P.sub=+b.dataset.sub; buildPipe(); }
+  else if(b.dataset.band!==undefined){ P.band=+b.dataset.band; buildPipe(); }
+  else if(b.dataset.rep){ P.rep=b.dataset.rep; buildPipe(); }
+  else if(b.dataset.pk){ P[b.dataset.pk]=b.dataset.pv; buildPipe(); } });
+
+/* COMPARE */
+const CMP={A:{dir:'Arabic->Hindi',pre:'ica_enrollment_only',rep:'power',model:'logreg',sec:4},B:{dir:'Arabic->Hindi',pre:'ica_enrollment_only',rep:'power_plus_coherence',model:'logreg',sec:4}};
+function cfgM(c){ const r=macro(c.dir,c.pre,c.rep,c.model); if(!r) return null;
+  let o={ba:r.balanced_accuracy,lo:r.ba_ci95_low,hi:r.ba_ci95_high,f1:r.macro_f1,cv:cvRow(c.dir,c.pre,c.rep,c.model)};
+  if(c.sec>4){ const d=D.test_duration.find(x=>x.direction===c.dir&&x.test_evidence_seconds===c.sec); if(d&&c.pre==='ica_enrollment_only'&&c.rep==='power'&&c.model==='logreg') o={...o,ba:d.balanced_accuracy,lo:d.ba_ci95_low,hi:d.ba_ci95_high,f1:d.macro_f1}; else return null; }
+  return o; }
+function cmpCol(k){ const c=CMP[k], m=cfgM(c), L={dir:'Direction',pre:'Preprocessing',rep:'Features',model:'Classifier',sec:'Test evidence'};
+  const sel=(f,vals)=>`<label>${L[f]}</label><select data-c="${k}" data-f="${f}">${vals.map(v=>`<option value="${v}" ${String(c[f])===String(v)?'selected':''}>${f==='sec'?v+' s':(LAB[v]||nice(v))}</option>`).join('')}</select>`;
+  return `<div class="kick" style="color:${k==='A'?'var(--acc)':'var(--pink)'}">Configuration ${k}</div>${sel('dir',DIRS)}${sel('pre',['filtered_no_ica','ica_enrollment_only','legacy_full_session_ica'])}${sel('rep',['power','coherence','power_plus_coherence'])}${sel('model',['logreg','shrinkage_lda','linear_svm'])}${sel('sec',[4,8,16,32])}
+   ${m?`<div style="margin-top:16px"><div class="big" style="color:${k==='A'?'var(--acc)':'var(--pink)'}">${cnt(m.ba)}</div><p class="note" style="margin:4px 0 0">balanced accuracy · 95% CI ${pct(m.lo)}–${pct(m.hi)} · macro-F1 ${pct(m.f1)}${m.cv?` · training-script CV ${pct(m.cv.nested_cv_balanced_accuracy)}`:''}</p></div>`
+     :`<div class="msg err" style="margin-top:14px">Not run in the study. ${c.sec>4?'Longer test evidence was only measured for enrollment-only ICA · power · logistic.':'Pick another combination.'}</div>`}`; }
+const contrast=(a,b)=>{ const diff=['dir','pre','rep','model','sec'].filter(f=>a[f]!==b[f]); if(diff.length!==1) return null; const f=diff[0], s=new Set([a[f],b[f]]);
+  if(f==='pre'&&s.has('ica_enrollment_only')&&s.has('legacy_full_session_ica')) return 'enrollment_ICA_minus_full_session_ICA';
+  if(f==='pre'&&s.has('ica_enrollment_only')&&s.has('filtered_no_ica')) return 'enrollment_ICA_minus_filtered_no_ICA';
+  if(f==='model'&&s.has('logreg')&&s.has('linear_svm')) return 'SVM_minus_logistic';
+  if(f==='model'&&s.has('logreg')&&s.has('shrinkage_lda')) return 'shrinkage_LDA_minus_logistic';
+  if(f==='rep'&&s.has('power')&&s.has('coherence')) return 'coherence_minus_power';
+  if(f==='rep'&&s.has('power')&&s.has('power_plus_coherence')) return 'fused_minus_power';
+  return f; };
+function buildCompare(){
+  $('#cA').innerHTML=cmpCol('A'); $('#cB').innerHTML=cmpCol('B');
+  const a=cfgM(CMP.A), b=cfgM(CMP.B); let h='<div class="hd">Result</div>';
+  if(a&&b){ const W=560,H=130,X=v=>44+v*(W-64);
+    const bar=(m,y,c,l)=>`<text x="30" y="${y+5}" text-anchor="end" style="font-weight:800;font-size:13px;fill:${c}">${l}</text><line class="draw" pathLength="1" x1="${X(m.lo)}" x2="${X(m.hi)}" y1="${y}" y2="${y}" stroke="${c}" stroke-width="10" stroke-linecap="round" opacity=".3"/><circle class="pop" style="--d:.5s;transform-origin:${X(m.ba)}px ${y}px" cx="${X(m.ba)}" cy="${y}" r="8" fill="${c}"/><text x="${X(m.ba)}" y="${y-14}" text-anchor="middle" style="fill:var(--ink);font-weight:700;font-size:12px">${pct(m.ba)}</text>`;
+    let g=`<line x1="${X(.05)}" x2="${X(.05)}" y1="12" y2="${H-24}" stroke="var(--warn)" stroke-dasharray="4 3"/><text x="${X(.05)}" y="${H-6}" text-anchor="middle" style="fill:var(--warn)">chance 5%</text>`; [.25,.5,.75,1].forEach(v=>g+=`<text x="${X(v)}" y="${H-6}" text-anchor="middle">${v*100}%</text>`);
+    h+=`<svg viewBox="0 0 ${W} ${H}" width="100%">${g}${bar(a,44,'var(--acc)','A')}${bar(b,88,'var(--pink)','B')}</svg>`;
+    const con=contrast(CMP.A,CMP.B), d=b.ba-a.ba, pr=con&&D.paired.find(x=>x.contrast===con&&x.direction===CMP.A.dir);
+    h+=`<p style="font-size:15px;margin:6px 0">B − A = <b>${d>=0?'+':''}${(100*d).toFixed(1)} points</b> of balanced accuracy.</p>`;
+    if(pr){ const sig=pr.wilcoxon_p_holm<0.05; h+=`<div class="msg ${sig?'ok':'info'}"><b>${sig?'✓ Statistically significant':'≈ Not statistically significant'}</b> after Holm correction (p = ${pr.wilcoxon_p_holm.toFixed(3)}). Paired participant test of ${esc(con.replace(/_/g,' '))}: mean difference ${(100*pr.mean_recall_difference).toFixed(1)} pts, 95% CI ${(100*pr.paired_bootstrap_ci95_low).toFixed(1)} to ${(100*pr.paired_bootstrap_ci95_high).toFixed(1)}.${sig?'':' Treat the difference as unresolved.'}</div>`; }
+    else if(con==='dir') h+=`<div class="msg info">Only the direction differs, and each direction is tested on different data, so no paired test applies. Overlapping intervals mean they perform similarly.</div>`;
+    else if(con==='sec') h+=`<div class="msg info">Longer test evidence is a different evaluation unit (combined decisions), so compare it descriptively.</div>`;
+    else h+=`<div class="msg info">More than one setting differs. Change one at a time for a fair comparison.</div>`;
+  } else h+='<p class="note">Pick a configuration that was run on both sides.</p>';
+  $('#cmpOut').innerHTML=h; animate($('#v-compare'));
+}
+document.addEventListener('change',e=>{ const s=e.target; if(!s.dataset.c) return; CMP[s.dataset.c][s.dataset.f]=s.dataset.f==='sec'?+s.value:s.value; safe(buildCompare); });
+
+/* RESULTS */
+let cmD='Arabic->Hindi', cmR='power', psD='Arabic->Hindi';
+function buildResults(){
+  const avg=a=>a.reduce((s,x)=>s+x,0)/a.length, ica=r=>avg(DIRS.map(d=>macro(d,'ica_enrollment_only',r,'logreg').balanced_accuracy));
+  $('#kpis').innerHTML=[[ica('power'),'Power features · 4 s'],[ica('power_plus_coherence'),'Power + coherence · 4 s'],[avg(D.test_duration.filter(x=>x.test_evidence_seconds===32).map(x=>x.balanced_accuracy)),'With 32 s of test EEG'],[.05,'Chance level (1 of 20)']]
+    .map(([v,l],i)=>`<div class="card"><div class="big ${i<3?'grad':''}" style="font-size:36px;${i===3?'color:var(--warn)':''}">${cnt(v,i===3?0:1)}</div><div class="note" style="margin:6px 0 0">${l}</div><div class="track" style="height:6px;margin-top:10px"><div class="fill" data-w="${100*v}%" style="${i===3?'background:var(--warn)':''}"></div></div></div>`).join('');
+  $('#chDur').innerHTML=lineChart(DIRS.map((d,i)=>({n:nice(d),c:CS[i],pts:D.test_duration.filter(x=>x.direction===d).map(x=>({x:x.test_evidence_seconds,y:x.balanced_accuracy,lo:x.ba_ci95_low,hi:x.ba_ci95_high}))})),{xlab:'seconds of test EEG',xs:[4,8,16,32]});
+  const e=D.enrollment.filter(x=>x.preprocessing==='filtered_no_ica'&&x.representation==='power');
+  $('#chEnr').innerHTML=lineChart(DIRS.map((d,i)=>({n:nice(d),c:CS[i],pts:e.filter(x=>x.direction===d).map(x=>({x:x.median_enrollment_seconds_per_subject,y:x.balanced_accuracy,lo:x.ci95_low,hi:x.ci95_high}))})),{xlab:'seconds of enrollment EEG per person',xs:[4,16,64,256]});
+  const A=D.artifact, abl=[...new Set(A.map(x=>x.ablation))], nm=s=>s.replace(/_/g,' ').replace('hz','Hz').replace('all power','All bands, all channels').replace('restricted sites','6 selected sites');
+  $('#chArt').innerHTML=abl.map(b=>`<div style="margin:10px 0"><div style="font-size:13px;font-weight:600">${nm(b)}</div>${DIRS.map((d,i)=>{const r=A.find(x=>x.ablation===b&&x.direction===d); return r?`<div class="row"><span style="color:var(--mute);font-size:11px">${d==='Arabic->Hindi'?'A → H':'H → A'}</span><div class="track"><div class="fill" data-w="${100*r.balanced_accuracy}%" style="${i?'background:var(--pink)':''}"></div></div><span style="text-align:right">${pct(r.balanced_accuracy)}</span></div>`:''}).join('')}</div>`).join('');
+  const c=x=>x?`${x.balanced_accuracy.toFixed(3)} <span style="color:var(--mute);font-weight:400">[${x.ba_ci95_low.toFixed(3)}, ${x.ba_ci95_high.toFixed(3)}]</span>`:'—';
+  $('#tblRes').innerHTML=`<table><tr><th>Features</th><th>Model</th><th class="n">Arabic → Hindi</th><th class="n">Hindi → Arabic</th></tr>${[['power','logreg'],['power','shrinkage_lda'],['power','linear_svm'],['coherence','logreg'],['power_plus_coherence','logreg']].map(([r,m])=>`<tr class="${r==='power_plus_coherence'?'hl':''}"><td>${LAB[r]}</td><td>${LAB[m]}</td><td class="n">${c(macro(DIRS[0],'ica_enrollment_only',r,m))}</td><td class="n">${c(macro(DIRS[1],'ica_enrollment_only',r,m))}</td></tr>`).join('')}</table><p class="note" style="margin-top:8px">Highlighted = highest point estimate. Its gain over power alone is not significant after correction (see Compare).</p>`;
+  buildCM(); buildPS();
+}
+function buildCM(){
+  $('#cmDir').innerHTML=DIRS.map(d=>`<button data-cmd="${d}" class="${d===cmD?'on':''}">${nice(d)}</button>`).join('');
+  $('#cmRep').innerHTML=['power','coherence','power_plus_coherence'].map(r=>`<button data-cmr="${r}" class="${r===cmR?'on':''}">${r==='power_plus_coherence'?'Fused':LAB[r]}</button>`).join('');
+  const m=D.confusion[cmR+'|'+cmD]; $('#cm').innerHTML=m?heat(m,{rows:m.map((_,i)=>pid(i+1)),cols:m.map((_,i)=>i+1),cell:19,lo:0,hi:1,fmt:v=>pct(v)}):'<p class="note">Not available.</p>';
+}
+function buildPS(){
+  $('#psDir').innerHTML=DIRS.map(d=>`<button data-psd="${d}" class="${d===psD?'on':''}">${nice(d)}</button>`).join('');
+  const rows=D.per_subject.filter(r=>r.direction===psD&&r.preprocessing==='filtered_no_ica'&&r.representation==='power'&&r.model==='logreg').sort((a,b)=>a.subject-b.subject);
+  const W=540,H=190,L=36,B=24,bw=(W-L-6)/rows.length,Y=v=>12+(1-v)*(H-12-B); let g='';
+  [0,.5,1].forEach(v=>g+=`<line x1="${L}" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L-5}" y="${Y(v)+4}" text-anchor="end">${v*100}%</text>`);
+  rows.forEach((r,i)=>{ const x=L+i*bw+3; g+=`<rect x="${x}" y="${Y(r.recall)}" width="${bw-6}" height="${Y(0)-Y(r.recall)}" rx="4" fill="${r.recall<.8?'var(--pink)':'var(--acc)'}" style="transform-origin:${x}px ${Y(0)}px;animation:barUp .8s ${(i*.04).toFixed(2)}s both cubic-bezier(.2,.8,.2,1)"><title>${pid(r.subject)}: recall ${pct(r.recall)}</title></rect><text x="${x+(bw-6)/2}" y="${H-8}" text-anchor="middle" style="font-size:10px">${r.subject}</text>`; });
+  $('#chPS').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg><p class="note" style="margin:0"><span style="color:var(--pink)">■</span> below 80%: harder to recognise across scripts.</p>`;
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.cmd){cmD=b.dataset.cmd;safe(buildCM);} if(b.dataset.cmr){cmR=b.dataset.cmr;safe(buildCM);} if(b.dataset.psd){psD=b.dataset.psd;safe(buildPS);} });
+
+/* CONCLUSIONS */
+const FINDINGS=[
+ {c:'var(--ok)',ic:'✓',tag:'Finding 01 · Supported by this experiment',t:'Cross-script identity information',short:'Cross-script transfer',sum:'identity transfers between Arabic and Hindi reading (89–96% balanced accuracy; chance = 5%).',
+  p:'Identity classification transfers between the Arabic and Hindi reading blocks in this dataset. Balanced accuracy is roughly 89–96% across the tested pipelines, against a 5% chance level for 20 classes.'},
+ {c:'var(--acc)',ic:'◆',tag:'Finding 02 · Observed',t:'Feature representation matters',short:'Representation',sum:'power and coherence both work; fusion is highest (≈96%) but not significantly better.',
+  p:'Power and coherence both carry discriminative information. Their fusion produced the highest estimates (≈96%), but paired participant comparisons did not establish a statistically significant improvement after Holm correction.'},
+ {c:'var(--b4)',ic:'↗',tag:'Finding 03 · Practical implication',t:'Evidence accumulation matters',short:'Evidence accumulation',sum:'more test EEG improves reliability (≈93% at 4 s → ≈98% at 32 s).',
+  p:'Performance rises with the amount of test evidence aggregated (≈93% at 4 s → ≈98% at 32 s) and with enrollment duration (≈51–52% with one 4-s window per person → ≈91–93% with 256 s).'},
+ {c:'var(--warn)',ic:'i',tag:'Research boundary',t:'What this experiment does not establish',short:'Scope',sum:'one session, fixed order; not long-term stability or cognitive/emotional state recognition.',
+  p:'It does not establish long-term biometric stability, universal language invariance, independent-session generalisation, or cognitive or emotional state recognition. Both scripts were recorded in one session with Arabic always first, and group, sex and recording date are partly confounded.'}];
+function buildConcl(){ $('#concl').innerHTML=FINDINGS.map((f,i)=>`<div class="findbig" style="--c:${f.c};animation:rise .5s ${i*.1}s both"><span class="num">0${i+1}</span><div class="tag">${f.tag}</div><h3>${f.t}</h3><p>${f.p}</p></div>`).join(''); }
+
+/* boot */
+if(!D){ document.body.innerHTML='<div style="padding:40px;font-family:sans-serif"><h3>No data embedded</h3><p>Run <code>python scripts/13_export_dashboard.py</code> and open dashboard/index.html.</p></div>'; }
+else { safe(buildDemo); go('overview'); }
+</script>
+</body>
+</html>
