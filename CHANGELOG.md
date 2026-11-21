@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-21
+
+- Withdrew the "cross-script EEG identity recognition during reading" framing. Reasons: the dataset sources conflict on the task (focus vs. speaking aloud), identity is confounded with a single recording session, and script is confounded with time. The manuscript draft will not be submitted (`paper/STATUS.md`).
+- Rewrote `README.md` with a status notice and narrowed the result descriptions. Removed the link to the Vercel deployment, which is no longer online.
+- Corrected unsupported dashboard claims in `dashboard/template.html` (reading, fingerprint, brain connectivity, muscle-artifact panel, ICA cleaning, demo confidence wording) and regenerated `dashboard/index.html`.
+- Pseudonymised `dataset_manifest.csv` and `DATASET_PROVENANCE.md`: participant folder names replaced by S1–S20, and absolute acquisition timestamps replaced by per-participant offsets and a recording-day index. Updated `scripts/11_dataset_audit.py` to write these outputs.
+- Added `results/LEGACY.md` and moved three unused legacy figures to `paper/legacy/`. Added superseded banners to the earlier assessment documents.
+
 ## 2026-11-13
 
 - Added `RESEARCH_AUDIT.md` before manuscript changes.

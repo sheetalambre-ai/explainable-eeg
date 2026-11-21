@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>EEG Identity Lab</title>
+<title>Cross-Block EEG Lab</title>
 <style>
 :root{
   --bg:#f6f4fd; --card:#ffffff; --ink:#1e1846; --mute:#6b6890; --line:#e9e5f7;
@@ -175,7 +175,7 @@ details.explain p{color:var(--mute);margin:8px 0 0}
 <div class="app">
 <aside>
   <div class="brand"><div class="logo"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-5 3 10 3-14 3 13 2-4h3"/></svg></div>
-    <div><b>EEG Identity Lab</b><small>MIT-ADT University · Pune</small></div></div>
+    <div><b>Cross-Block EEG Lab</b><small>MIT-ADT University · Pune</small></div></div>
   <nav class="vt" id="side"></nav>
   <div class="foot"><b><span class="pulse"></span>Research demo</b>Offline · reproducible<br>No data leaves this page</div>
 </aside>
@@ -183,7 +183,7 @@ details.explain p{color:var(--mute);margin:8px 0 0}
   <div class="mob seg" id="mob"></div>
   <div class="top">
     <div class="title"><div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4l2-5 3 10 3-14 3 13 2-4h3"/></svg></div>
-      <div><h1 id="pageTitle">EEG Identity Lab</h1><p id="pageSub"></p></div></div>
+      <div><h1 id="pageTitle">Cross-Block EEG Lab</h1><p id="pageSub"></p></div></div>
     <div class="stats">
       <div class="stat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 010 7M18 14.5c2 .7 3.2 2.6 3.5 5.5"/></svg><div><b>20</b><span>Participants</span></div></div>
       <div class="stat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h4l2-5 3 10 3-14 3 13 2-4h3"/></svg><div><b>14</b><span>EEG channels</span></div></div>
@@ -193,7 +193,7 @@ details.explain p{color:var(--mute);margin:8px 0 0}
 
   <section class="view" id="v-overview">
     <div class="card">
-      <div class="stagehead"><div class="hd">End-to-end pipeline: from EEG signal to identity prediction</div><button class="btn" data-go="pipeline">Explore each step →</button></div>
+      <div class="stagehead"><div class="hd">End-to-end pipeline: from scalp signal to a closed-set recording match</div><button class="btn" data-go="pipeline">Explore each step →</button></div>
       <div class="flow" id="ovFlow"></div>
     </div>
     <div class="grid ov2" style="margin-top:16px">
@@ -217,7 +217,7 @@ details.explain p{color:var(--mute);margin:8px 0 0}
     <div class="grid g2">
       <div class="card">
         <div class="hd">1 · Choose an input</div>
-        <p class="note">Each sample is 32 s of EEG (8 windows) from the script the model was <b>not</b> trained on.</p>
+        <p class="note">Each sample is 32 s of EEG (8 windows) from the block the model was <b>not</b> trained on.</p><p class="note"><b>Closed-set demo.</b> The model always names one of the 20 enrolled recordings, even for EEG from someone who was never enrolled. Scores are softmax outputs, not calibrated probabilities. Each person has a single recording session, so a match shows that the recording was recognised, not that the person would be recognised on another day.</p>
         <span class="seg" id="dir"></span>
         <div class="chips" id="chips"></div>
         <div style="margin:4px 0 14px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>How much EEG to use</span><b id="nWinL">8 windows · 32 s</b></div>
@@ -255,7 +255,7 @@ details.explain p{color:var(--mute);margin:8px 0 0}
       <div class="card"><div class="hd">Confusion matrix</div><p class="note">Row = true person, column = predicted. Hover a cell.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="seg" id="cmDir"></span><span class="seg" id="cmRep"></span></div><div id="cm" style="margin-top:10px"></div></div>
       <div class="card"><div class="hd">Per-participant recall</div><p class="note">Share of each person's windows correctly identified (filter-only, power, logistic).</p><span class="seg" id="psDir"></span><div id="chPS" style="margin-top:10px"></div></div>
-      <div class="card"><div class="hd">Is it muscle artifact?</div><p class="note">Removing high-frequency bands and edge sites lowers accuracy, but identity stays far above chance.</p><div id="chArt"></div></div>
+      <div class="card"><div class="hd">Frequency and site restriction (does not rule out artifacts)</div><p class="note">Keeping only 1&ndash;13 Hz, or only six sites, lowers accuracy, but it stays above chance. This does <b>not</b> rule out muscle or speech artifacts: two of the dataset authors&rsquo; papers say each word was spoken aloud, and jaw, tongue and lip movement potentials fall inside 1&ndash;13 Hz. Session-specific recording properties are not removed either.</p><div id="chArt"></div></div>
       <div class="card"><div class="hd">Experimental results</div><p class="note">Enrollment-only ICA, 4-s windows, balanced accuracy [95% CI].</p><div id="tblRes"></div></div>
     </div>
   </section>
@@ -264,11 +264,11 @@ details.explain p{color:var(--mute);margin:8px 0 0}
 
   <section class="view" id="v-how">
     <div class="grid g2">
-      <div class="card"><div class="hd">In one paragraph</div><p class="note" style="margin:0">Participants read words in Arabic, then Hindi, while 14 EEG channels were recorded. The recording is cut into 4-second windows. Each window is described by its frequency content (140 band-power numbers) and how channels move together (455 coherence numbers). A classifier learns each person from one script only and must then name them from the other script. Everything that is learned (scaling, ICA, hyperparameters) uses the training script only.</p></div>
+      <div class="card"><div class="hd">In one paragraph</div><p class="note" style="margin:0">Participants were shown words in an Arabic block, then a Hindi block, while 14 EEG channels were recorded. The dataset sources disagree on the task: the description asks participants to focus on each word, while two of the authors&rsquo; papers say each word was spoken aloud. The recording is cut into 4-second windows. Each window is described by its frequency content (140 band-power numbers) and how channels move together (455 coherence numbers). A classifier learns each recording from one block only and must then match windows from the other block. Everything that is learned (scaling, ICA, hyperparameters) uses the training block only. ICA removed no components in any of the 40 fits.</p></div>
       <div class="card"><div class="hd">Three evaluation units, never mixed</div>
         <div class="units"><div class="unit"><b>4 s</b><span>one window</span></div><div class="unit"><b>32 s</b><span>8 windows combined</span></div><div class="unit"><b>Block</b><span>all held-out windows → reported accuracy</span></div></div></div>
       <div class="card"><div class="hd">Input file format (live demo)</div><p class="note" style="margin:0">CSV, one row per 4-s window, with 140 columns named like <code>FP1_delta_log</code> / <code>FP1_delta_rel</code>. Extra columns are ignored. An optional <code>true_participant</code> column enables the correct/incorrect check. Rows with missing values are skipped.</p></div>
-      <div class="card"><div class="hd">Honest caveats</div><p class="note" style="margin:0">Both scripts were recorded in one session with Arabic always first, so this shows cross-<i>task</i> stability within a session, not across days. Group, sex and recording date are partly confounded. Rebuild this page with <code>python scripts/13_export_dashboard.py</code>. Data: Aldhaheri et al., Mendeley 7cdyp2r5cz.</p></div>
+      <div class="card"><div class="hd">What this does not show</div><p class="note" style="margin:0">Each participant has one continuous recording, so recognising the person cannot be separated from recognising the session (cap fit, impedance, day). Arabic always came first, so script and time-on-task are confounded. The task is documented inconsistently (silent focus vs. speaking aloud), so muscle and speech artifacts may contribute. Nationality, native language and sex are partly confounded, and recording dates cluster by group. The results show same-session cross-block discrimination of 20 recordings; they are not evidence of EEG biometrics, reading, or language effects. Rebuild this page with <code>python scripts/13_export_dashboard.py</code>. Data: Aldhaheri et al., Mendeley 7cdyp2r5cz.</p></div>
     </div>
   </section>
 </main>
@@ -299,9 +299,9 @@ function animate(root){
 const cnt=(x,d=1)=>`<span data-count="${(100*x).toFixed(d)}" data-dec="${d}" data-suf="%">${pct(x,d)}</span>`;
 
 /* navigation (vertical tabs) */
-const VIEWS=[['overview','Overview','M3 11l9-7 9 7v9H3z','EEG Identity Lab','Who is reading? EEG identity recognition across scripts. Enroll a person while they read <b>Arabic</b>, recognise them while they read <b>Hindi</b>, or the reverse.'],
- ['demo','Live demo','M7 4l12 8-12 8z','Live demo','Give the system 4–32 seconds of EEG and see who it thinks is reading.'],
- ['pipeline','Pipeline','M4 6h6v4H4zM14 14h6v4h-6zM7 10v6h7','Pipeline','From raw brain signal to an identity decision, one step at a time.'],
+const VIEWS=[['overview','Overview','M3 11l9-7 9 7v9H3z','Cross-Block EEG Lab','Same-session cross-block matching of 20 EEG recordings. Each recording is enrolled on its <b>Arabic</b> block and matched on its <b>Hindi</b> block, or the reverse. Exploratory: one session per person, fixed block order, task possibly overt speech.'],
+ ['demo','Live demo','M7 4l12 8-12 8z','Live demo','Give the system 4–32 seconds of EEG features and see which of the 20 enrolled recordings it matches.'],
+ ['pipeline','Pipeline','M4 6h6v4H4zM14 14h6v4h-6zM7 10v6h7','Pipeline','From the raw scalp signal to a closed-set match, one step at a time.'],
  ['compare','Compare','M8 4v16M16 4v16M3 8h10M11 16h10','Compare','Put two experimental configurations side by side.'],
  ['results','Results','M4 20V10M10 20V4M16 20v-7M22 20H2','Results','All numbers come from the corrected, leakage-safe analysis.'],
  ['conclusions','Conclusions','M5 12l5 5L20 7','Conclusions','What this experiment supports, and what it does not.'],
@@ -372,17 +372,17 @@ const ic=(k,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="no
 /* the 6 pipeline steps */
 const STEPS=[
  {t:'EEG input',i:'wave',body:'<div class="shape">14 ch × 4 s<br>(1,024 samples)</div>',
-  what:'The brain signal from 14 scalp electrodes is cut into 4-second windows.',why:'A window is one example. Each person gives hundreds of them.',in:'continuous recording',out:'14 × 1,024'},
+  what:'The scalp signal from 14 electrodes (brain activity mixed with eye, muscle and recording artifacts) is cut into 4-second windows.',why:'A window is one example. Each recording gives hundreds of them.',in:'continuous recording',out:'14 × 1,024'},
  {t:'Preprocessing',i:'gear',body:'<ul><li>Notch 50 + 100 Hz</li><li>Band-pass 1–45 Hz</li><li>Common average ref.</li><li>Enrollment-only ICA</li></ul>',
-  what:'Remove mains hum, slow drift and noise shared by every electrode.',why:'So the model learns brain patterns, not electrical noise.',in:'14 × 1,024 raw',out:'14 × 1,024 clean',subs:['Filtering','Common average','ICA']},
+  what:'Remove mains hum, slow drift and noise shared by every electrode.',why:'Removes mains hum and slow drift. It does not remove muscle or speech artifacts, and ICA found no components to remove in any of the 40 fits. The live demo uses the filter-only model.',in:'14 × 1,024 raw',out:'14 × 1,024 clean',subs:['Filtering','Common average','ICA']},
  {t:'Feature extraction',i:'layers',body:'<ul><li>Welch PSD</li><li>Log &amp; relative power</li><li>Band coherence</li></ul>',
-  what:'Measure how much of each brain rhythm (δ θ α β γ) is present, and how strongly channels move together.',why:'Rhythms and connectivity differ from person to person, like a fingerprint.',in:'14 × 1,024',out:'14 × 5 power · 91 × 5 coherence',subs:['Welch PSD','Band power','Coherence']},
+  what:'Measure how much power each frequency band (δ θ α β γ) carries, and how strongly channels move together.',why:'These features differ between recordings. With one session per person they cannot show a stable personal trait.',in:'14 × 1,024',out:'14 × 5 power · 91 × 5 coherence',subs:['Welch PSD','Band power','Coherence']},
  {t:'Representation',i:'grid',body:'<div class="repchip" style="background:var(--soft)">Power <b>140</b></div><div class="repchip" style="background:var(--pinkSoft)">Coherence <b>455</b></div><div class="repchip" style="background:var(--soft2)">Fusion <b>595</b></div>',
   what:'Flatten the feature grids into one long list of numbers.',why:'Classifiers need a fixed-length vector as input.',in:'feature grids',out:'140 / 455 / 595 numbers'},
  {t:'Classification',i:'net',body:'<ul><li>Logistic regression</li><li>Shrinkage LDA</li><li>Linear SVM</li></ul>',
-  what:'A model trained on one script only scores how well the vector matches each of the 20 people.',why:'Testing on the other script shows whether identity survives a change of task.',in:'1 vector',out:'20 scores'},
- {t:'Decision',i:'target',body:'<div class="shape">20-way identity<br>(8 windows = 32 s)</div>',
-  what:'Combine the scores of several windows and pick the most likely person.',why:'More evidence makes the decision more reliable.',in:'8 × 20 scores',out:'1 identity'}];
+  what:'A model trained on one block only scores how well the vector matches each of the 20 enrolled recordings.',why:'Testing on the other block checks whether the match survives the block change. Script, time-on-task and drift change together, so the effect of script alone cannot be isolated.',in:'1 vector',out:'20 scores'},
+ {t:'Decision',i:'target',body:'<div class="shape">20-way closed-set match<br>(8 windows = 32 s)</div>',
+  what:'Combine the scores of several windows and pick the best-matching enrolled recording.',why:'More windows from the same session make the match more consistent. There is no reject option.',in:'8 × 20 scores',out:'1 of 20 recordings'}];
 const flowHTML=active=>STEPS.map((s,i)=>`${i?`<div class="arrow ${i<=active?'lit':''}"><i style="animation-delay:${(i*.25).toFixed(2)}s"></i></div>`:''}<button class="node ${i===active?'on':i<active?'done':''}" data-step="${i}"><div class="nh">${ic(s.i)}${s.t}</div>${s.body}</button>`).join('');
 
 /* live scoring */
@@ -395,7 +395,7 @@ function predict(d,X){
   return {order,c0,p0:order[0][0],votes:lp.map(r=>model.classes[r.indexOf(Math.max(...r))]),winP:lp.map(r=>Math.exp(r[k0])),model};
 }
 const verdictHTML=(R,truth)=>{ const ok=truth==null?null:truth===R.c0;
-  return `<div class="verdict ${ok===null?'':ok?'ok':'bad'}"><span class="ck pop" style="background:${ok===false?'var(--warn)':ok?'var(--ok)':'var(--acc)'}">${ok===false?'✕':'✓'}</span>Identified as ${pid(R.c0)}${ok===null?'':ok?' — correct':` — actually ${pid(truth)}`}</div>`; };
+  return `<div class="verdict ${ok===null?'':ok?'ok':'bad'}"><span class="ck pop" style="background:${ok===false?'var(--warn)':ok?'var(--ok)':'var(--acc)'}">${ok===false?'✕':'✓'}</span>Best match: ${pid(R.c0)}${ok===null?'':ok?' — correct':` — actually ${pid(truth)}`}</div>`; };
 const stripHTML=R=>`<div class="strip">${R.votes.map((v,i)=>`<span class="pop" style="--d:${(.15+i*.09).toFixed(2)}s;background:color-mix(in srgb,${v===R.c0?'var(--acc)':'var(--warn)'} ${Math.round(40+60*R.winP[i])}%,#fff)" title="window ${i+1}: votes ${pid(v)}">${v===R.c0?Math.round(100*R.winP[i])+'%':pid(v)}</span>`).join('')}</div>`;
 
 /* OVERVIEW */
@@ -427,7 +427,7 @@ function buildOverview(){
   const row=(r,m)=>`<tr class="${r==='power_plus_coherence'?'hl':''}"><td>${LAB[r]}</td><td>${m==='logreg'?'Logistic':LAB[m]}</td><td class="n">${c(macro(DIRS[0],'ica_enrollment_only',r,m))}</td><td class="n">${c(macro(DIRS[1],'ica_enrollment_only',r,m))}</td></tr>`;
   $('#ovTable').innerHTML=`<table><tr><th>Features</th><th>Model</th><th class="n">Arabic → Hindi</th><th class="n">Hindi → Arabic</th></tr>${row('power','logreg')}${row('coherence','logreg')}${row('power_plus_coherence','logreg')}${row('power','linear_svm')}</table>`;
   const cm=D.confusion['power|Arabic->Hindi'], lab=cm.map((_,i)=>(i===0||i%5===4)?i+1:'');
-  $('#ovCM').innerHTML=heat(cm,{rows:lab,cols:lab,cell:13,lo:0,hi:1,L:24,fmt:v=>pct(v)})+`<p class="note" style="margin:4px 0 0">True identity (rows) × predicted identity (columns).</p>`;
+  $('#ovCM').innerHTML=heat(cm,{rows:lab,cols:lab,cell:13,lo:0,hi:1,L:24,fmt:v=>pct(v)})+`<p class="note" style="margin:4px 0 0">True participant recording (rows) × predicted (columns).</p>`;
   $('#ovFind').innerHTML=FINDINGS.map(f=>`<div class="find"><span class="fi" style="background:${f.c}">${f.ic}</span><div><b>${f.short}:</b> <span style="color:var(--mute)">${f.sum}</span></div></div>`).join('');
 }
 function ovRun(){ if(!ovS) return; const csv=parseCSV(ovS.csv), model=D.models[ovD], idx=model.features.map(f=>csv.head.indexOf(f));
@@ -460,7 +460,7 @@ function run(text,name){
 function evaluate(){
   if(!last) return; const n=Math.min(nWin,last.X.length), R=predict(dir,last.X.slice(0,n)), agree=R.votes.filter(v=>v===R.c0).length;
   $('#nWinL').textContent=`${n} window${n>1?'s':''} · ${n*4} s`+(last.X.length<nWin?` (file has ${last.X.length})`:'');
-  const conf=R.p0>0.95?'very high':R.p0>0.8?'high':R.p0>0.5?'moderate':'low';
+  const conf='closed-set · not calibrated';
   $('#out').innerHTML=`<div class="hd">2 · Result <span style="color:var(--mute);font-weight:400;font-size:13px">· ${esc(last.name)}</span></div>
    <div style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center">${verdictHTML(R,last.truth)}<div class="scorebox pop"><small>Combined score</small><b class="grad">${fmtP(R.p0)}</b><small>${conf}</small></div></div>
    <p class="note">Trained on <b>${R.model.train}</b> only · tested on ${n} window${n>1?'s':''} (${n*4} s) · ${agree}/${n} windows pick ${pid(R.c0)} on their own.</p>
@@ -506,7 +506,7 @@ function stepVisual(){
       return subTabs(1)+`<div class="grid g2"><div><p class="note">The shared average (top row) is subtracted from every channel.</p>${waves([avg,...S.car],{chs:['mean',...ch],H:340})}</div>
         <div><div class="msg info" style="margin-top:0;font-size:15px">x′<sub>c</sub>(t) = x<sub>c</sub>(t) − <sup>1</sup>⁄<sub>14</sub> Σ<sub>k</sub> x<sub>k</sub>(t)</div><p class="note" style="margin-top:12px">Channel ${chSel()} · <span style="color:var(--pink)">before</span> / <span style="color:var(--acc)">after</span></p>${waves([S.car[P.ch]],{chs:[ch[P.ch]],overlay:[S.filtered[P.ch]],H:150})}<p class="note">Noise common to all electrodes (for example reference drift) cancels out. Differences between brain areas remain.</p></div></div>`; }
     return subTabs(1)+`<div class="grid g2"><div><svg viewBox="0 0 460 220" width="100%"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--acc)"/></marker></defs>
-      <rect class="pop" style="transform-origin:105px 62px" x="10" y="20" width="190" height="84" rx="14" fill="var(--soft)" stroke="var(--acc)"/><text x="105" y="52" text-anchor="middle" style="font-size:14px;fill:var(--ink);font-weight:700">Training script</text><text x="105" y="74" text-anchor="middle">fit ICA, find blink sources</text>
+      <rect class="pop" style="transform-origin:105px 62px" x="10" y="20" width="190" height="84" rx="14" fill="var(--soft)" stroke="var(--acc)"/><text x="105" y="52" text-anchor="middle" style="font-size:14px;fill:var(--ink);font-weight:700">Training script</text><text x="105" y="74" text-anchor="middle">fit ICA on this block only</text>
       <path class="draw" pathLength="1" d="M204 62H254" stroke="var(--acc)" stroke-width="2.5" marker-end="url(#ar)"/>
       <rect class="pop" style="--d:.3s;transform-origin:355px 62px" x="260" y="20" width="190" height="84" rx="14" fill="#fff" stroke="var(--line)"/><text x="355" y="52" text-anchor="middle" style="font-size:14px;fill:var(--ink);font-weight:700">Held-out script</text><text x="355" y="74" text-anchor="middle">apply the same unmixing</text>
       <rect class="pop" style="--d:.6s;transform-origin:230px 166px" x="10" y="128" width="440" height="76" rx="14" fill="var(--warnSoft)" stroke="var(--warn)" stroke-dasharray="5 4"/><text x="230" y="158" text-anchor="middle" style="font-size:14px;fill:var(--warn);font-weight:700">✕ Leaky: fit ICA on both scripts together</text><text x="230" y="180" text-anchor="middle">the cleaning step has already "seen" the test data</text></svg></div>
@@ -523,7 +523,7 @@ function stepVisual(){
         <div><p class="note"><b>Relative</b>: each rhythm's share of total power (rows sum to 100%)</p>${heat(t(S.bp_rel),{rows:ch,cols:BN,cell:28,lo:0,fmt:v=>pct(v)})}
         <div class="units"><div class="unit"><b>14</b><span>channels</span></div><div class="unit"><b>× 5</b><span>bands</span></div><div class="unit"><b>× 2</b><span>= 140 numbers</span></div></div></div></div>`; }
     return subTabs(2)+`<div class="grid g2"><div><div class="seg" style="margin-bottom:10px">${BN.map((b,k)=>`<button data-band="${k}" class="${k===P.band?'on':''}">${b} ${BNAME[k]}</button>`).join('')}</div>${heat(S.coh[P.band],{rows:ch,cols:ch.map(c=>c.replace('FP','Fp')),cell:24,lo:0,hi:1})}</div>
-      <div><p class="note">Coherence (0–1) measures how consistently two electrodes oscillate together in a band. It captures how brain areas <b>connect</b>, not just how active they are.</p>
+      <div><p class="note">Coherence (0–1) measures how consistently two electrodes oscillate together in a band. At the scalp it is inflated by volume conduction and shared sources, including artifacts, so it is <b>not</b> a measure of brain-area connectivity.</p>
       <div class="units"><div class="unit"><b>91</b><span>pairs (14 choose 2)</span></div><div class="unit"><b>× 5</b><span>bands</span></div><div class="unit"><b>455</b><span>numbers</span></div></div>
       <p class="note" style="margin-top:12px">The matrix is symmetric and its diagonal is always 1, so only the upper triangle is kept.</p></div></div>`; }
   if(P.step===3) return `<div class="seg" style="margin-bottom:14px">${['power','coherence','power_plus_coherence'].map(r=>`<button data-rep="${r}" class="${r===P.rep?'on':''}">${LAB[r]}</button>`).join('')}</div>${vecHTML(P.rep)}
@@ -640,14 +640,14 @@ document.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b
 
 /* CONCLUSIONS */
 const FINDINGS=[
- {c:'var(--ok)',ic:'✓',tag:'Finding 01 · Supported by this experiment',t:'Cross-script identity information',short:'Cross-script transfer',sum:'identity transfers between Arabic and Hindi reading (89–96% balanced accuracy; chance = 5%).',
-  p:'Identity classification transfers between the Arabic and Hindi reading blocks in this dataset. Balanced accuracy is roughly 89–96% across the tested pipelines, against a 5% chance level for 20 classes.'},
- {c:'var(--acc)',ic:'◆',tag:'Finding 02 · Observed',t:'Feature representation matters',short:'Representation',sum:'power and coherence both work; fusion is highest (≈96%) but not significantly better.',
+ {c:'var(--ok)',ic:'✓',tag:'Finding 01 · Observed (same session only)',t:'Same-session cross-block matching',short:'Cross-block matching',sum:'a model trained on one block matches windows from the other block to the right recording (89–96% balanced accuracy; chance = 5%).',
+  p:'A model trained on one block matches windows from the other block to the correct one of 20 recordings, with roughly 89–96% balanced accuracy across the tested pipelines (chance 5%). Each person has a single recording, so this cannot separate recognising the person from recognising the session.'},
+ {c:'var(--acc)',ic:'◆',tag:'Finding 02 · Observed',t:'No reliable ranking of feature types',short:'Representation',sum:'power and coherence both work; fusion is highest (≈96%) but not significantly better.',
   p:'Power and coherence both carry discriminative information. Their fusion produced the highest estimates (≈96%), but paired participant comparisons did not establish a statistically significant improvement after Holm correction.'},
- {c:'var(--b4)',ic:'↗',tag:'Finding 03 · Practical implication',t:'Evidence accumulation matters',short:'Evidence accumulation',sum:'more test EEG improves reliability (≈93% at 4 s → ≈98% at 32 s).',
-  p:'Performance rises with the amount of test evidence aggregated (≈93% at 4 s → ≈98% at 32 s) and with enrollment duration (≈51–52% with one 4-s window per person → ≈91–93% with 256 s).'},
- {c:'var(--warn)',ic:'i',tag:'Research boundary',t:'What this experiment does not establish',short:'Scope',sum:'one session, fixed order; not long-term stability or cognitive/emotional state recognition.',
-  p:'It does not establish long-term biometric stability, universal language invariance, independent-session generalisation, or cognitive or emotional state recognition. Both scripts were recorded in one session with Arabic always first, and group, sex and recording date are partly confounded.'}];
+ {c:'var(--b4)',ic:'↗',tag:'Finding 03 · Observed (same session only)',t:'Evidence accumulation matters',short:'Evidence accumulation',sum:'more test EEG from the same session raises accuracy (≈93% at 4 s → ≈98% at 32 s).',
+  p:'Within the same session, performance rises with the amount of test evidence aggregated (≈93% at 4 s → ≈98% at 32 s) and with enrollment duration (≈51–52% with one 4-s window per person → ≈91–93% with 256 s).'},
+ {c:'var(--warn)',ic:'i',tag:'Research boundary',t:'What this experiment does not establish',short:'Scope',sum:'one session per person, fixed order, task possibly overt speech; not biometrics, reading or language effects.',
+  p:'It does not establish EEG biometric identity, long-term stability, reading-related or language effects, independent-session generalisation, or that the signal is neural. Each person has one recording session; Arabic always came first; two of the dataset authors’ papers say each word was spoken aloud, so muscle and speech artifacts may contribute; and nationality, native language, sex and recording date are partly confounded.'}];
 function buildConcl(){ $('#concl').innerHTML=FINDINGS.map((f,i)=>`<div class="findbig" style="--c:${f.c};animation:rise .5s ${i*.1}s both"><span class="num">0${i+1}</span><div class="tag">${f.tag}</div><h3>${f.t}</h3><p>${f.p}</p></div>`).join(''); }
 
 /* boot */

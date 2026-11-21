@@ -1,5 +1,7 @@
 # Methodology Changes
 
+> **Superseded (2026-11-21).** This document was written under the withdrawn "cross-script EEG identity recognition during reading" framing. The task may have been overt speech, identity is confounded with a single recording session, and script is confounded with time. See the status notice in `README.md`.
+
 ## Implemented in corrected code
 
 1. **Training-only ICA:** FastICA fit and ocular-component selection are performed on the enrollment-language block for each participant and direction. The fitted transform is applied unchanged to the held-out block. Channels and ordering are checked before application. The no-ICA filtered pipeline is also run as a sensitivity baseline.

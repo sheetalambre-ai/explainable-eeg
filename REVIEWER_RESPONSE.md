@@ -1,5 +1,7 @@
 # Response to the Six Review Concerns
 
+> **Superseded (2026-11-21).** This document was written under the withdrawn "cross-script EEG identity recognition during reading" framing. The task may have been overt speech, identity is confounded with a single recording session, and script is confounded with time. See the status notice in `README.md`.
+
 This response records the changes made to the analysis and six-section manuscript. Results are in `results/corrected/`; the paper is `paper/main.tex`.
 
 ## 1. Dataset and demographic confounding

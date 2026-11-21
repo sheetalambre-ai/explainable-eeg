@@ -1,5 +1,7 @@
 # Corrected Experiment Protocol
 
+> **Superseded (2026-11-21).** This document was written under the withdrawn "cross-script EEG identity recognition during reading" framing. The task may have been overt speech, identity is confounded with a single recording session, and script is confounded with time. See the status notice in `README.md`.
+
 Status: complete for the evaluated comparison grid as of 2026-11-13. See `results/corrected/RESULTS_SUMMARY.md` and the CSV outputs. The completed grid evaluates logistic regression, shrinkage LDA and linear SVM for power, plus logistic regression for coherence and fused features.
 
 ## Dataset and task
